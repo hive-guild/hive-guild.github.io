@@ -13,8 +13,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./releases/6d37d5ccb5d0e1e9/styles.css" />
-    <script type="module" src="./releases/6d37d5ccb5d0e1e9/app.js"></script>
+    <link rel="stylesheet" href="./releases/a8168109baaee9ef/styles.css" />
+    <script type="module" src="./releases/a8168109baaee9ef/app.js"></script>
   </head>
   <body>
     <div class="site-shell">
@@ -127,6 +127,16 @@
           <div class="public-panel">
             <div class="public-toolbar"><div><span class="section-index">AKTUELLER KADER</span><h2>ROSTER <span id="public-count"></span></h2></div><div class="filter-row"><label><span class="sr-only">Rolle filtern</span><select id="public-filter-role"><option value="">Alle Rollen</option><option>Tank</option><option>Healer</option><option>Melee DPS</option><option>Ranged DPS</option><option>Flexible</option></select></label><label><span class="sr-only">Klasse filtern</span><select id="public-filter-class"><option value="">Alle Klassen</option></select></label><label><span class="sr-only">Sortierung</span><select id="public-sort-by"><option value="role">Nach Rolle</option><option value="class">Nach Klasse</option><option value="spec">Nach Spec</option></select></label></div></div>
             <div id="public-stats" class="public-stats" aria-live="polite"></div>
+            <div class="availability-actions" role="group" aria-label="Gemeinsame Raidzeiten anzeigen">
+              <button id="public-availability-all" class="availability-toggle" type="button" aria-expanded="false" aria-controls="public-availability-panel" data-availability="all" data-availability-scope="public" disabled>Wann haben bis jetzt alle Zeit?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
+              <button id="public-availability-most" class="availability-toggle" type="button" aria-expanded="false" aria-controls="public-availability-panel" data-availability="most" data-availability-scope="public" disabled>Wann haben die meisten gemeinsam Zeit?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
+            </div>
+            <div id="public-availability-panel" class="admin-insights public-availability-panel" role="region" aria-label="Gemeinsame Raidzeiten" hidden>
+              <section id="public-common-card" class="insight-card common-availability-card"><span class="section-index">GEMEINSAME VERFÜGBARKEIT</span><h3>Wann haben bis jetzt alle Zeit?</h3><div id="public-common-availability" aria-live="polite"></div></section>
+              <section id="public-most-card" class="insight-card common-availability-card" hidden><span class="section-index">GRÖSSTE GEMEINSAME GRUPPE</span><h3>Wann haben die meisten gemeinsam Zeit?</h3><div id="public-most-availability" aria-live="polite"></div></section>
+              <section class="insight-card"><span class="section-index">VERFÜGBARKEIT</span><h3>Welche Tage passen?</h3><div id="public-day-chart" class="bar-chart"></div></section>
+              <section class="insight-card"><span class="section-index">RAIDFENSTER</span><h3>Wann können wir raiden?</h3><div id="public-time-chart" class="time-chart"></div></section>
+            </div>
             <div id="public-error" class="message message-error" role="alert" hidden></div>
             <div id="public-list" class="public-list" aria-live="polite"></div>
             <div id="public-empty" class="empty-state" hidden>Noch keine Rückmeldungen.</div>
@@ -139,8 +149,13 @@
           <div id="admin-panel" class="admin-panel" hidden>
             <div class="admin-toolbar"><div><span class="admin-live"><span class="signal-dot"></span> RAID-KADER</span><h2>RÜCKMELDUNGEN</h2></div><button id="logout-button" class="text-button" type="button">Abmelden ↗</button></div>
             <div id="stats-grid" class="stats-grid" aria-live="polite"></div>
-            <div class="admin-insights">
-              <section class="insight-card common-availability-card"><span class="section-index">GEMEINSAME VERFÜGBARKEIT</span><h3>Wann haben alle Zeit?</h3><div id="common-availability" aria-live="polite"></div></section>
+            <div class="availability-actions" role="group" aria-label="Gemeinsame Raidzeiten anzeigen">
+              <button id="availability-all" class="availability-toggle" type="button" aria-expanded="true" aria-controls="availability-panel" data-availability="all" data-availability-scope="admin">Wann haben bis jetzt alle Zeit?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
+              <button id="availability-most" class="availability-toggle" type="button" aria-expanded="false" aria-controls="availability-panel" data-availability="most" data-availability-scope="admin">Wann haben die meisten gemeinsam Zeit?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
+            </div>
+            <div id="availability-panel" class="admin-insights" role="region" aria-label="Gemeinsame Raidzeiten">
+              <section id="common-card" class="insight-card common-availability-card"><span class="section-index">GEMEINSAME VERFÜGBARKEIT</span><h3>Wann haben bis jetzt alle Zeit?</h3><div id="common-availability" aria-live="polite"></div></section>
+              <section id="most-card" class="insight-card common-availability-card" hidden><span class="section-index">GRÖSSTE GEMEINSAME GRUPPE</span><h3>Wann haben die meisten gemeinsam Zeit?</h3><div id="most-availability" aria-live="polite"></div></section>
               <section class="insight-card"><span class="section-index">VERFÜGBARKEIT</span><h3>Welche Tage passen?</h3><div id="day-chart" class="bar-chart"></div></section>
               <section class="insight-card"><span class="section-index">RAIDFENSTER</span><h3>Wann können wir raiden?</h3><div id="time-chart" class="time-chart"></div></section>
             </div>

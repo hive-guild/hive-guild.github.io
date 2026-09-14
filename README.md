@@ -15,7 +15,7 @@ Nur die Hauptseite https://hive-guild.github.io/ wird gepflegt. Das alte Reposit
 
 ## Einrichtung
 
-1. Für eine neue Datenbank `db/supabase.sql` ausführen. Für das laufende Projekt ausschließlich gezielte Migrationen unter `db/migrations` verwenden; zuletzt `2026-09-14-public-raid-days.sql`.
+1. Für eine neue Datenbank `db/supabase.sql` ausführen. Für das laufende Projekt ausschließlich gezielte Migrationen unter `db/migrations` verwenden; zuletzt `2026-09-14-discord-tags.sql`.
 2. In Supabase Authentication einen Admin mit E-Mail/Passwort anlegen und seine UUID in `public.hive_admins(user_id)` eintragen.
 3. `dist/config.js` enthält nur die öffentliche Supabase-URL und den Publishable Key.
 4. Discord-App **HIVE FOREVER**, Client-ID `1549126667295785110`: OAuth2-Redirect `https://amsmtoxjkitcwzumwyuz.supabase.co/auth/v1/callback`. Das Client-Secret direkt im Supabase-Discord-Anbieter speichern. [Konfiguration und Prüfungen](docs/discord-login.md).
@@ -46,3 +46,9 @@ Das statische HELLO-Emoji zeigt den Clown-Pepe beim Dab. Es stammt aus [„Honk 
 ## Bevorzugter Server
 
 Die Anmeldung fragt PVE, PVP oder „Mir egal“ ab und lädt die Auswahl beim Bearbeiten wieder. Sie ist auch öffentlich als kleines Badge sichtbar. „Mir egal“ wird als `ANY` gespeichert; die Auswahl verwendet drei zusammengehörige, mit dem eingebauten Imagegen-Tool erzeugte Fantasy-Icons: Dungeonportal, gekreuzte Schwerter und Kompass. [Dateien und vollständige Prompts](docs/server-icons.md) sind dokumentiert. Ältere Rückmeldungen ohne Auswahl zeigen „Noch offen“; ihnen wird keine Präferenz zugeordnet. Alte Clients ohne dieses Feld behalten beim Speichern eine bereits gesetzte Auswahl. Andere Werte werden serverseitig abgewiesen. `tests/server-mode.sql` prüft die Speicherung, Aktualisierung, Admin-Zugriffe und die elf ausdrücklich öffentlichen Felder mit anschließendem Rollback.
+
+## Gemeinsame Raidzeiten und Discord-Tags
+
+Unter den Rollenkacheln zeigen zwei Schalter die gemeinsamen Zeitfenster aller bisherigen Teilnehmer oder die Zeitfenster mit der größten gleichzeitig verfügbaren Gruppe. Beide Optionen stehen öffentlich und im Admin-Bereich bereit und berücksichtigen immer den gesamten Kader, unabhängig von Rollen- oder Klassenfiltern. Gleich gute Zeitfenster werden vollständig aufgeführt; beim Wechsel der Gruppenzusammensetzung bleiben angrenzende Zeitfenster getrennt.
+
+Der Discord-Kontakt verwendet den vom Anbieter bestätigten Benutzernamen einschließlich eines vorhandenen alten Diskriminators. Der Marker #0 entfällt bei modernen Discord-Benutzernamen. Die Migration korrigiert vorhandene verknüpfte Anmeldungen. Discord-Tags bleiben nur im eigenen Eintrag und im Admin-Bereich sichtbar. Prüfung: tests/discord-tags.sql.

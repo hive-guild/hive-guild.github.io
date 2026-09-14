@@ -13,8 +13,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./releases/8772f3dcafabe5d2/styles.css" />
-    <script type="module" src="./releases/8772f3dcafabe5d2/app.js"></script>
+    <link rel="stylesheet" href="./releases/6d37d5ccb5d0e1e9/styles.css" />
+    <script type="module" src="./releases/6d37d5ccb5d0e1e9/app.js"></script>
   </head>
   <body>
     <div class="site-shell">
@@ -135,15 +135,16 @@
 
         <section id="admin-view" class="view dashboard-view" hidden aria-labelledby="dashboard-title">
           <div class="page-intro"><span class="section-index">04 / RAIDLEITUNG</span><h1 id="dashboard-title">DIE <em>PLANUNG.</em></h1><p>Alle Antworten, Zeiten und Kontaktdaten für die Raidleitung.</p></div>
-          <div id="admin-login-card" class="login-layout"><div class="login-art"><div class="login-symbol">H</div><span>RAIDLEITUNG<br />ACCESS ONLY</span></div><form id="admin-login-form" class="login-card"><span class="form-kicker">ADMIN-BEREICH</span><h2>Einloggen</h2><p>Die vollständige Übersicht ist nur für die Raidleitung sichtbar.</p><label class="field"><span>E-Mail</span><input type="email" name="email" autocomplete="username" required placeholder="raidleitung@…" /></label><label class="field"><span>Passwort</span><input type="password" name="password" autocomplete="current-password" required placeholder="••••••••" /></label><div id="login-error" class="message message-error" role="alert" hidden></div><button class="button button-primary" type="submit">Übersicht öffnen <span aria-hidden="true">↗</span></button></form></div>
+          <div id="admin-login-card" class="login-layout"><div class="login-art"><img class="admin-hive-logo" src="./assets/hive-logo.jpg" alt="HIVE Guild" width="1122" height="1402" decoding="async" /><span>RAIDLEITUNG<br />ACCESS ONLY</span></div><form id="admin-login-form" class="login-card"><span class="form-kicker">ADMIN-BEREICH</span><h2>Einloggen</h2><p>Die vollständige Übersicht ist nur für die Raidleitung sichtbar.</p><label class="field"><span>E-Mail</span><input type="email" name="email" autocomplete="username" required placeholder="raidleitung@…" /></label><label class="field"><span>Passwort</span><input type="password" name="password" autocomplete="current-password" required placeholder="••••••••" /></label><div id="login-error" class="message message-error" role="alert" hidden></div><button class="button button-primary" type="submit">Übersicht öffnen <span aria-hidden="true">↗</span></button></form></div>
           <div id="admin-panel" class="admin-panel" hidden>
             <div class="admin-toolbar"><div><span class="admin-live"><span class="signal-dot"></span> RAID-KADER</span><h2>RÜCKMELDUNGEN</h2></div><button id="logout-button" class="text-button" type="button">Abmelden ↗</button></div>
             <div id="stats-grid" class="stats-grid" aria-live="polite"></div>
             <div class="admin-insights">
+              <section class="insight-card common-availability-card"><span class="section-index">GEMEINSAME VERFÜGBARKEIT</span><h3>Wann haben alle Zeit?</h3><div id="common-availability" aria-live="polite"></div></section>
               <section class="insight-card"><span class="section-index">VERFÜGBARKEIT</span><h3>Welche Tage passen?</h3><div id="day-chart" class="bar-chart"></div></section>
               <section class="insight-card"><span class="section-index">RAIDFENSTER</span><h3>Wann können wir raiden?</h3><div id="time-chart" class="time-chart"></div></section>
             </div>
-            <div class="roster-panel"><div class="roster-top"><div><span class="section-index">ALLE EINTRÄGE</span><h3>Der aktuelle Kader <span id="result-count"></span></h3></div><div class="filter-row"><label><span class="sr-only">Rolle filtern</span><select id="filter-role"><option value="">Alle Rollen</option><option>Tank</option><option>Healer</option><option>Damage</option><option>Flexible</option></select></label><label><span class="sr-only">Klasse filtern</span><select id="filter-class"><option value="">Alle Klassen</option></select></label><label><span class="sr-only">Sortierung</span><select id="sort-by"><option value="role">Nach Rolle</option><option value="class">Nach Klasse</option><option value="spec">Nach Spec</option><option value="newest">Neueste zuerst</option></select></label></div></div><div id="roster-list" class="roster-list"></div><div id="roster-empty" class="empty-state" hidden>Hier ist noch niemand gelistet. Zeit, den Link an die alten Raider zu schicken.</div></div>
+            <div class="roster-panel"><div class="roster-top"><div><span class="section-index">ALLE EINTRÄGE</span><h3>Der aktuelle Kader <span id="result-count"></span></h3></div><div class="filter-row"><label><span class="sr-only">Rolle filtern</span><select id="filter-role"><option value="">Alle Rollen</option><option>Tank</option><option>Healer</option><option>Melee DPS</option><option>Ranged DPS</option><option>Flexible</option></select></label><label><span class="sr-only">Klasse filtern</span><select id="filter-class"><option value="">Alle Klassen</option></select></label><label><span class="sr-only">Sortierung</span><select id="sort-by"><option value="role">Nach Rolle</option><option value="class">Nach Klasse</option><option value="spec">Nach Spec</option><option value="newest">Neueste zuerst</option></select></label></div></div><div id="roster-list" class="roster-list"></div><div id="roster-empty" class="empty-state" hidden>Hier ist noch niemand gelistet. Zeit, den Link an die alten Raider zu schicken.</div></div>
           </div>
         </section>
       </main>

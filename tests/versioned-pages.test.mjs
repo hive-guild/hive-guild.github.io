@@ -17,6 +17,7 @@ function fixture(t) {
     'index.html': '<!doctype html><head><link rel="stylesheet" href="./styles.css"><script type="module" src="./app.js"></script></head><body>HIVE</body>',
     'app.js': 'import { config } from "./config.js";\nimport "./race-classes.js";\nimport "./vendor/supabase-auth.js";\n',
     'raid-roles.js': 'export const raidRole = () => "Flexible";\n',
+    'availability.js': 'export const commonAvailability = () => ({});\n',
     'config.js': 'export const config = "public-config";\n',
     'race-classes.js': 'export const races = ["Orc"];\n',
     'styles.css': '.hero{background:url("assets/hero.png")}\n.icon{background:url(./assets/icon.svg)}\n',
@@ -37,7 +38,7 @@ test('both page entrypoints load one immutable release, including transitive mod
     assert.ok(!html.includes('src="./app.js"'));
   }
   assert.ok(readFileSync(join(root, 'anmeldung/index.html'), 'utf8').includes('<base href="../" />'));
-  for (const file of ['app.js', 'config.js', 'race-classes.js', 'raid-roles.js', 'vendor/supabase-auth.js']) {
+  for (const file of ['app.js', 'config.js', 'race-classes.js', 'raid-roles.js', 'availability.js', 'vendor/supabase-auth.js']) {
     assert.ok(existsSync(join(root, 'releases', version, file)), file);
   }
 });

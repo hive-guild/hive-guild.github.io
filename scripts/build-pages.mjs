@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const releaseFiles = ['app.js', 'config.js', 'race-classes.js', 'raid-roles.js', 'styles.css', 'vendor/supabase-auth.js', 'vendor/supabase-auth.LICENSE'];
+const releaseFiles = ['app.js', 'config.js', 'race-classes.js', 'raid-roles.js', 'availability.js', 'styles.css', 'vendor/supabase-auth.js', 'vendor/supabase-auth.LICENSE'];
 const readText = (path) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
 
 export function buildPages(dist = fileURLToPath(new URL('../dist/', import.meta.url))) {

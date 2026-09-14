@@ -38,10 +38,36 @@ test('touching windows are not simultaneous and gaps are not bridged', () => {
  assert.deepEqual(result.slots,[{day:'Mon',start:'18:30',end:'19:00'},{day:'Mon',start:'19:00',end:'20:00'},{day:'Mon',start:'21:00',end:'23:00'}]);
 });
 
-test('a later larger group replaces smaller candidates and keeps chronological order', () => {
+test('the next best group extends through the all-participant window', () => {
  const result=mostAvailability([row(['Mon','Sun'],'18:30','23:00'),row(['Sun'],'19:00','22:30'),row(['Sun'],'20:00','22:00')]);
- assert.equal(result.availableCount,3);
- assert.deepEqual(result.slots,[{day:'Sun',start:'20:00',end:'22:00'}]);
+ assert.equal(result.availableCount,2);
+ assert.deepEqual(result.slots,[{day:'Sun',start:'19:00',end:'22:30'}]);
+});
+
+test('six participants get wider five-person windows and an additional day', () => {
+ const rows=[...Array.from({length:5},()=>row(['Mon','Wed'],'19:00','23:00')),row(['Wed'],'19:30','22:30')];
+ assert.deepEqual(commonAvailability(rows).days,['Wed']);
+ assert.deepEqual(mostAvailability(rows),{status:'available',count:6,excludedCount:0,availableCount:5,slots:[
+   {day:'Mon',start:'19:00',end:'23:00'},{day:'Wed',start:'19:00',end:'23:00'},
+ ]});
+});
+
+test('different groups cannot be merged across an everyone-available window', () => {
+ const result=mostAvailability([row(['Wed'],'18:30','23:00'),row(['Wed'],'18:30','22:00'),row(['Wed'],'20:00','23:00')]);
+ assert.equal(result.availableCount,2);
+ assert.deepEqual(result.slots,[{day:'Wed',start:'18:30',end:'22:00'},{day:'Wed',start:'20:00',end:'23:00'}]);
+});
+
+test('identical schedules and a single participant have no wider alternative', () => {
+ assert.equal(mostAvailability([row(['Wed']),row(['Wed'])]).status,'none');
+ assert.equal(mostAvailability([row(['Wed'])]).status,'none');
+});
+
+test('falls back to the highest smaller group that actually adds flexibility', () => {
+ const rows=[...Array.from({length:4},()=>row(['Wed'])),row(['Wed','Sun']),row(['Wed','Sun'])];
+ const result=mostAvailability(rows);
+ assert.equal(result.availableCount,2);
+ assert.deepEqual(result.slots,[{day:'Sun',start:'19:00',end:'23:00'}]);
 });
 
 test('incomplete records are reported without inflating attendance or changing input', () => {

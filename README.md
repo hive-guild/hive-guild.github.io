@@ -49,6 +49,6 @@ Die Anmeldung fragt PVE, PVP oder „Mir egal“ ab und lädt die Auswahl beim B
 
 ## Gemeinsame Raidzeiten und Discord-Tags
 
-Unter den Rollenkacheln zeigen zwei Schalter die gemeinsamen Zeitfenster aller bisherigen Teilnehmer oder die Zeitfenster mit der größten gleichzeitig verfügbaren Gruppe. Beide Optionen stehen öffentlich und im Admin-Bereich bereit und berücksichtigen immer den gesamten Kader, unabhängig von Rollen- oder Klassenfiltern. Gleich gute Zeitfenster werden vollständig aufgeführt; beim Wechsel der Gruppenzusammensetzung bleiben angrenzende Zeitfenster getrennt.
+Unter den Rollenkacheln zeigen zwei Schalter die gemeinsamen Zeitfenster aller bisherigen Teilnehmer oder die beste Alternative mit weniger Teilnehmern, die zusätzliche Tage oder längere Zeitfenster ermöglicht. Beide Optionen stehen öffentlich und im Admin-Bereich bereit und berücksichtigen immer den gesamten Kader, unabhängig von Rollen- oder Klassenfiltern. Gleich gute Zeitfenster werden vollständig aufgeführt; jedes alternative Zeitfenster gilt für eine durchgehend verfügbare Gruppe und umfasst auch enthaltene Zeiten, zu denen alle können. Gibt es keinen zusätzlichen Spielraum, wird dies ausdrücklich angezeigt.
 
 Der Discord-Kontakt verwendet den vom Anbieter bestätigten Benutzernamen einschließlich eines vorhandenen alten Diskriminators. Der Marker #0 entfällt bei modernen Discord-Benutzernamen. Die Migration korrigiert vorhandene verknüpfte Anmeldungen. Discord-Tags bleiben nur im eigenen Eintrag und im Admin-Bereich sichtbar. Prüfung: tests/discord-tags.sql.

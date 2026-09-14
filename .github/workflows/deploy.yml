@@ -1,40 +1,19 @@
-name: HIVE auf GitHub Pages veröffentlichen
-
+name: HIVE frontend checks
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: github-pages
-  cancel-in-progress: false
-
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check frontend and prepare signup URL
+      - name: Check frontend and versioned pages
         run: |
           node --check dist/app.js
           node --check dist/config.js
-          node --check dist/vendor/supabase-auth.js
           node --test tests/*.test.mjs
           node scripts/build-pages.mjs
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
-      - id: deployment
-        uses: actions/deploy-pages@v4
-        with:
-          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+          git diff --exit-code -- dist

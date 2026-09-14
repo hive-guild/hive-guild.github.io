@@ -2,7 +2,7 @@
 
 Live: [hive-guild.github.io/anmeldung/](https://hive-guild.github.io/anmeldung/) · [GitHub](https://github.com/hive-guild/hive-guild.github.io) · [Admin-Login](https://hive-guild.github.io/#/admin)
 
-Die bisherige Adresse [flyleaf1502.github.io/hive/](https://flyleaf1502.github.io/hive/) bleibt aktiv. Beide Seiten verwenden dieselbe Supabase-Datenbank. Das bestehende lokale Repository bleibt die Quelle für beide Veröffentlichungen.
+Nur die Hauptseite https://hive-guild.github.io/ wird gepflegt. Das alte Repository und die zweite Webseite werden nicht mehr aktualisiert. Das lokale Repository bleibt die Quelle; ausschließlich Remote `hive-pages` veröffentlichen.
 
 ## Anmeldung und Zugriff
 
@@ -19,7 +19,7 @@ Die bisherige Adresse [flyleaf1502.github.io/hive/](https://flyleaf1502.github.i
 2. In Supabase Authentication einen Admin mit E-Mail/Passwort anlegen und seine UUID in `public.hive_admins(user_id)` eintragen.
 3. `dist/config.js` enthält nur die öffentliche Supabase-URL und den Publishable Key.
 4. Discord-App **HIVE FOREVER**, Client-ID `1549126667295785110`: OAuth2-Redirect `https://amsmtoxjkitcwzumwyuz.supabase.co/auth/v1/callback`. Das Client-Secret direkt im Supabase-Discord-Anbieter speichern. [Konfiguration und Prüfungen](docs/discord-login.md).
-5. GitHub Settings → Pages → Source **GitHub Actions**. Mit `git push origin main` und `git push hive-pages main` beide Repositories veröffentlichen. Beide Pages-Workflows müssen erfolgreich sein.
+5. GitHub Settings → Pages → Source **Deploy from a branch**, Branch **gh-pages**, Ordner **/(root)**. Nach Build, Tests und Commit: `git push hive-pages main`, dann `python scripts/publish-pages.py`. Das Skript veröffentlicht nur den geprüften, eingecheckten Inhalt von `dist/` und pusht ohne Force ausschließlich auf die Hauptseite. Der Workflow auf `main` prüft den Code; GitHub veröffentlicht den Pages-Branch. Anschließend den Pages-Lauf und die Live-Version prüfen.
 
 ## Entwicklung und Prüfung
 

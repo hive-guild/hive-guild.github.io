@@ -14,8 +14,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./releases/096642b5b5023003/styles.css" />
-    <script type="module" src="./releases/096642b5b5023003/app.js"></script>
+    <link rel="stylesheet" href="./releases/0cf4a822bc57fda2/styles.css" />
+    <script type="module" src="./releases/0cf4a822bc57fda2/app.js"></script>
   </head>
   <body>
     <div class="site-shell">
@@ -126,7 +126,7 @@
         <section id="public-view" class="view public-view" hidden aria-labelledby="public-title">
           <div class="page-intro"><span class="section-index">03 / RAID-ÜBERSICHT</span><h1 id="public-title">WER IST WIEDER <em>AM START?</em></h1><p>Alle bisherigen Rückmeldungen und bevorzugte Rassen, Klassen und Specs.</p></div>
           <div class="public-panel">
-            <div class="public-toolbar"><div><span class="section-index">AKTUELLER KADER</span><h2>ROSTER <span id="public-count"></span></h2></div><div class="filter-row"><label><span class="sr-only">Rolle filtern</span><select id="public-filter-role"><option value="">Alle Rollen</option><option>Tank</option><option>Healer</option><option>Melee DPS</option><option>Ranged DPS</option><option>Flexible</option></select></label><label><span class="sr-only">Klasse filtern</span><select id="public-filter-class"><option value="">Alle Klassen</option></select></label><label><span class="sr-only">Sortierung</span><select id="public-sort-by"><option value="role">Nach Rolle</option><option value="class">Nach Klasse</option><option value="spec">Nach Spec</option></select></label></div></div>
+            <div class="public-toolbar"><div><span class="section-index">AKTUELLER KADER</span><h2>ROSTER <span id="public-count"></span></h2></div><div class="filter-row"><label><span class="sr-only">Rolle filtern</span><select id="public-filter-role"><option value="">Alle Rollen</option><option>Tank</option><option>Healer</option><option>Melee DPS</option><option>Ranged DPS</option><option value="Flexible">tbd</option></select></label><label><span class="sr-only">Klasse filtern</span><select id="public-filter-class"><option value="">Alle Klassen</option></select></label><label><span class="sr-only">Sortierung</span><select id="public-sort-by"><option value="role">Nach Rolle</option><option value="class">Nach Klasse</option><option value="spec">Nach Spec</option></select></label></div></div>
             <div id="public-stats" class="public-stats" aria-live="polite"></div>
             <section class="insight-card mode-card" aria-labelledby="public-mode-heading">
               <div class="mode-card-head"><div><span class="section-index">SPIELMODUS</span><h3 id="public-mode-heading">Griefen, gegriefed werden oder langweilen? 🤔</h3></div><span id="public-roster-scope" class="mode-scope"></span></div>
@@ -168,7 +168,7 @@
               <section class="insight-card"><span class="section-index">WOCHENTAGE</span><h3>Welche Tage passen?</h3><div id="day-chart" class="bar-chart"></div></section>
               <section class="insight-card"><span class="section-index">RAIDZEITFENSTER</span><h3>Wann können wir raiden?</h3><div id="time-chart" class="time-chart"></div></section>
             </div>
-            <div class="roster-panel"><div class="roster-top"><div><span class="section-index">ALLE EINTRÄGE</span><h3>Der aktuelle Kader <span id="result-count"></span></h3></div><div class="filter-row"><label><span class="sr-only">Rolle filtern</span><select id="filter-role"><option value="">Alle Rollen</option><option>Tank</option><option>Healer</option><option>Melee DPS</option><option>Ranged DPS</option><option>Flexible</option></select></label><label><span class="sr-only">Klasse filtern</span><select id="filter-class"><option value="">Alle Klassen</option></select></label><label><span class="sr-only">Sortierung</span><select id="sort-by"><option value="role">Nach Rolle</option><option value="class">Nach Klasse</option><option value="spec">Nach Spec</option><option value="newest">Neueste zuerst</option></select></label></div></div><div id="roster-list" class="roster-list"></div><div id="roster-empty" class="empty-state" hidden>Hier ist noch niemand gelistet. Zeit, den Link an die alten Raider zu schicken.</div></div>
+            <div class="roster-panel"><div class="roster-top"><div><span class="section-index">ALLE EINTRÄGE</span><h3>Der aktuelle Kader <span id="result-count"></span></h3></div><div class="filter-row"><label><span class="sr-only">Rolle filtern</span><select id="filter-role"><option value="">Alle Rollen</option><option>Tank</option><option>Healer</option><option>Melee DPS</option><option>Ranged DPS</option><option value="Flexible">tbd</option></select></label><label><span class="sr-only">Klasse filtern</span><select id="filter-class"><option value="">Alle Klassen</option></select></label><label><span class="sr-only">Sortierung</span><select id="sort-by"><option value="role">Nach Rolle</option><option value="class">Nach Klasse</option><option value="spec">Nach Spec</option><option value="newest">Neueste zuerst</option></select></label></div></div><div id="roster-list" class="roster-list"></div><div id="roster-empty" class="empty-state" hidden>Hier ist noch niemand gelistet. Zeit, den Link an die alten Raider zu schicken.</div></div>
           </div>
         </section>
       </main>

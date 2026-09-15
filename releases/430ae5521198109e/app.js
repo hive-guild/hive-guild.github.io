@@ -126,11 +126,11 @@ function updateDerivedRole() {
     return;
   }
   panel.hidden = false;
-  // The role is the one that would be saved; only its wording follows the display label.
+  // The value shown is the one that would be saved, so preview and roster cannot disagree.
   const role = derivedRole();
   const display = $("#derived-role");
   const icon = $("#derived-role-icon");
-  display.textContent = raidRoleLabel(role);
+  display.textContent = role;
   display.dataset.role = role.toLowerCase();
   icon.hidden = false;
   icon.src = iconUrl(roleIcons[role]);
@@ -500,7 +500,7 @@ function renderPublicRoster() {
     const tile = element("button", `public-stat role-${raidRoleClass(role)}`);
     tile.type = "button";
     tile.disabled = count === 0;
-    tile.setAttribute("aria-label", count ? `Zu ${raidRoleLabel(role)} springen (${count})` : `${raidRoleLabel(role)}: keine Einträge`);
+    tile.setAttribute("aria-label", count ? `Zu ${role} springen (${count})` : `${role}: keine Einträge`);
     tile.addEventListener("click", () => {
       $("#public-filter-role").value = "";
       $("#public-filter-class").value = "";
@@ -513,7 +513,7 @@ function renderPublicRoster() {
     const icon = document.createElement("img");
     icon.src = iconUrl(roleIcons[role]);
     icon.alt = "";
-    tile.append(icon, element("span", "", raidRoleLabel(role)), element("strong", "", count));
+    tile.append(icon, element("span", "", role), element("strong", "", count));
     stats.append(tile);
   }
   const list = $("#public-list");

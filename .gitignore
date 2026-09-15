@@ -4,3 +4,6 @@ Thumbs.db
 
 node_modules/
 .pnpm-store/
+# The SQL check runs on a local PostgreSQL engine that is only needed for the checks, never for
+# building the pages, so its lockfile stays out of the repository.
+package-lock.json

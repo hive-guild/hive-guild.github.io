@@ -134,15 +134,17 @@ test('Skyborne ships its own portrait and no placeholder artwork', () => {
   assert.match(html, /Skyborne: offizielles Forever-Charakterbild/);
 });
 
-test('every race portrait is edge to edge on black, without a frame', () => {
+test('the race portraits are shown without a frame and are never cropped', () => {
   const css = readFileSync(fileURLToPath(new URL('../dist/styles.css', import.meta.url)), 'utf8');
-  // The framed plate is gone: the portrait fills its box on all pages.
+  // The framed plate is gone: the portrait is fitted into its box on all pages.
   const roster = css.match(/\.public-race-icon\{([^}]*)\}/);
   assert.ok(roster, 'no roster race icon rule');
-  assert.match(roster[1], /object-fit:cover/);
+  // contain, not cover: the portraits are taller than the tile and cropping cut the head off.
+  assert.match(roster[1], /object-fit:contain/);
   assert.ok(!/padding|background|border/.test(roster[1]), 'the roster tile still draws a frame');
   const form = css.match(/\.choice-icon\[src\*="race-"\]\{([^}]*)\}/);
   assert.ok(form, 'no form race icon rule');
+  assert.match(form[1], /object-fit:contain/);
   assert.ok(!/background:/.test(form[1]), 'the form tile still draws a backdrop');
   assert.match(form[1], /box-shadow:none/, 'the form tile still draws a hairline');
   // And no leftover edge mask from the rolled back attempt.

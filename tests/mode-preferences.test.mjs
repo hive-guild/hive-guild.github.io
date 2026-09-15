@@ -93,8 +93,14 @@ test('overview and admin panel render the statistic through one shared function 
   // Both surfaces read the same calculation from the shared module.
   assert.equal([...appSource.matchAll(/modePreferenceStats\(/g)].length, 1);
   // Every mode row carries the same artwork the registration form uses.
-  assert.match(appSource, /chartRow\(serverModeLabel\(row\.mode\), row\.count, row\.share, serverModeIcons\[row\.mode\]\)/);
-  assert.equal([...appSource.matchAll(/row\.count, row\.share, serverModeIcons\[row\.mode\]/g)].length, 1);
+  assert.match(appSource, /chartRow\(serverModeLabel\(row\.mode\), row\.count, 0, row\.share\)/);
+  assert.match(appSource, /image\.src = iconUrl\(serverModeIcons\[row\.mode\]\)/);
+  // The percentage column only exists where a row reports a share, so the day and time bars keep
+  // their compact three-column layout and never render a stray "0 %" cell.
+  assert.match(appSource, /if \(share !== null\) \{\n    row\.classList\.add\("chart-row-share"\);/);
+  assert.equal([...appSource.matchAll(/chartRow\(dayLabels\[day\], dayCounts\[index\], Math\.max\(\.\.\.dayCounts, 1\)\)/g)].length, 1);
+  assert.equal([...appSource.matchAll(/chartRow\(time, counts\[index\], Math\.max\(\.\.\.counts, 1\)\)/g)].length, 1);
+  assert.ok(!/chartRow\([^)]*,[^)]*,[^)]*,[^)]*,/.test(appSource), 'chartRow called with too many arguments');
   // No extra explanation lines below the bars; the card head names the scope instead.
   assert.ok(!/mode-total/.test(appSource), 'stale caption element still rendered');
   assert.ok(!/ergeben die Anteile zusammen/.test(appSource), 'removed share explanation still rendered');
@@ -103,6 +109,8 @@ test('overview and admin panel render the statistic through one shared function 
 test('the public statistic describes the unfiltered roster and says so', () => {
   assert.match(appSource, /The statistic describes the complete roster, independently of role and class filters/);
   assert.match(appSource, /never the current role\/class filter/);
+  // The scope badge counts votes and keeps the singular correct.
+  assert.match(appSource, /#public-roster-scope"\)\.textContent = `\$\{publicEntries\.length\} \$\{publicEntries\.length === 1 \? "Vote" : "Votes"\}`/);
   // The admin card names its scope in the markup.
   const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
   assert.match(html, /id="mode-stats"/);

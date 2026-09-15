@@ -102,6 +102,17 @@ test('the "noch nicht sicher" artwork is the cleaned, uniformly dark asset', () 
   assert.equal([...appSource.matchAll(/role-flexible\.png/g)].length, 9);
 });
 
+test('Skyborne uses the official render, not the retired ear placeholder', () => {
+  assert.ok(existsSync(iconPath('race-skyborne.png')), 'race-skyborne.png is missing');
+  assert.ok(!existsSync(iconPath('elf-ear.svg')), 'the CC BY 3.0 placeholder is still shipped');
+  assert.match(appSource, /\{ name: "Skyborne", icon: "race-skyborne\.png" \}/);
+  assert.ok(!/elf-ear/.test(appSource), 'app.js still points at the retired placeholder');
+  // The list in the footer must credit Blizzard for it.
+  const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
+  assert.ok(!/Elf ear|elf-ear\.html/.test(html), 'the footer still credits the removed placeholder');
+  assert.match(html, /Skyborne: Ausschnitt aus einem offiziellen Forever-Render/);
+});
+
 test('the statistic only offers the play modes the project actually stores', () => {
   assert.deepEqual(serverModes.map((mode) => mode.name), ['PVE', 'PVP', 'ANY']);
   assert.equal(serverModeLabel('ANY'), 'Mir egal');

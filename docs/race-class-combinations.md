@@ -10,6 +10,12 @@ Geprüft am 14.09.2026, Stand der BlizzCon-Ankündigungen vor dem Betastart. HIV
 | Undead | Warrior, Paladin, Rogue, Priest, Mage, Warlock |
 | Skyborne (Horde) | Warrior, Hunter, Rogue, Shaman, Druid |
 
+## Rassenbilder
+
+Die vier klassischen Horde-Rassen zeigen Brustbilder von Blizzards offizieller Rassenseite. Für Skyborne gibt es dort noch kein Portrait; stattdessen wird ein Ausschnitt aus einem offiziellen Forever-Render verwendet (`Skyborne_Customization_061.png`, 3840 × 2160, bezogen über [warcraft.wiki.gg](https://warcraft.wiki.gg/wiki/Skyborne)).
+
+Aufbereitung: Zuschnitt um Kopf und Schultern, Hintergrund stark abgedunkelt und entsättigt (die Silhouette bleibt intakt, weil ein Freistellen bei diesem Bild ausfranst), Figur leicht aufgehellt, Ausgabe als 144 × 144 PNG. Die vollständige Beschreibung und die weiteren gesichteten Kandidaten stehen in `work/skyborne-quellen/QUELLEN.md`. Copyright: © Blizzard Entertainment, Nutzung wie bei den übrigen Rassenbildern.
+
 „Noch nicht sicher“ bleibt für Race und Class möglich. Bei offener Race sind alle neun Horde-Classes auswählbar. Race oder Class können zuerst gewählt werden. Alle Kacheln bleiben sichtbar; inkompatible Optionen werden in beiden Richtungen ausgegraut und deaktiviert. Ein Wechsel zu einer kompatiblen Race erhält Class und Spec. „Auswahl zurücksetzen“ gibt alle Race-/Class-Optionen wieder frei und leert den Spec; andere Formularangaben bleiben erhalten. Eine beim Laden eines alten Eintrags inkompatible Class/Spec wird zur erneuten Auswahl geleert.
 
 Bestehende, inzwischen ungültige Kombinationen bleiben gespeichert. Beim Bearbeiten wird eine passende Class/Spec verlangt; es wird nichts automatisch gespeichert oder gelöscht. Die neue Datenbank-Constraint wird mit `NOT VALID` angelegt und prüft neue sowie geänderte Zeilen einschließlich Admin-Änderungen. Öffentliche Felder und Zugriffsrechte auf Teilnehmerdaten bleiben unverändert.

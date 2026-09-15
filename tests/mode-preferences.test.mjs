@@ -105,27 +105,23 @@ test('the "noch nicht sicher" artwork stays the single question-mark asset', () 
   assert.ok(!/if \(option\.role\) \{\s*\n\s*const roleIcon/.test(appSource), 'the preview is back on the flexible tile');
 });
 
-test('Skyborne uses the official render, not the retired ear placeholder', () => {
-  assert.ok(existsSync(iconPath('race-skyborne.png')), 'race-skyborne.png is missing');
-  assert.ok(!existsSync(iconPath('elf-ear.svg')), 'the CC BY 3.0 placeholder is still shipped');
-  assert.match(appSource, /\{ name: "Skyborne", icon: "race-skyborne\.png" \}/);
-  assert.ok(!/elf-ear/.test(appSource), 'app.js still points at the retired placeholder');
-  // The list in the footer must credit Blizzard for it.
+test('Skyborne falls back to the credited placeholder while no portrait is picked', () => {
+  // The race artwork work was rolled back on request, so the placeholder is back in place and the
+  // footer has to credit it. Whoever adds a real Skyborne portrait updates this test with it.
+  assert.ok(existsSync(iconPath('elf-ear.svg')), 'the credited placeholder is missing');
+  assert.match(appSource, /\{ name: "Skyborne", icon: "elf-ear" \}/);
   const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
-  assert.ok(!/Elf ear|elf-ear\.html/.test(html), 'the footer still credits the removed placeholder');
-  assert.match(html, /Skyborne: Ausschnitt aus einem offiziellen Forever-Render/);
+  assert.match(html, /Skyborne-Platzhalter: <a href="https:\/\/game-icons\.net\/1x1\/delapouite\/elf-ear\.html"/);
+  assert.match(html, /CC BY 3\.0/);
 });
 
-test('every race portrait is presented the same way on both pages', () => {
+test('the race portraits are presented with the plain tile treatment', () => {
   const css = readFileSync(fileURLToPath(new URL('../dist/styles.css', import.meta.url)), 'utf8');
-  // One mask for the roster tile and the form tile, so a painted portrait and the cut-out render
-  // end with the same soft fade instead of a hard square against the surface behind them.
-  const mask = css.match(/\.public-race-icon,\.choice-icon\[src\*="race-"\]\{\n([^}]*)\}/);
-  assert.ok(mask, 'no shared race-portrait presentation rule');
-  assert.match(mask[1], /-webkit-mask-image:radial-gradient\(/);
-  assert.match(mask[1], /mask-image:radial-gradient\(/);
-  // The roster tile itself keeps its framed plate; the mask only softens the artwork's edge.
+  // The added edge mask was rolled back with the artwork, so no mask rule may linger.
+  assert.ok(!/mask-image:radial-gradient\(115%/.test(css), 'the rolled-back race mask is still in the stylesheet');
+  // The roster tile keeps its framed plate and the form tile keeps its own backdrop.
   assert.match(css, /\.public-race-icon\{[^}]*background:#121720/);
+  assert.match(css, /\.choice-icon\[src\*="race-"\]\{object-fit:contain;border-radius:4px;background:radial-gradient\(/);
 });
 
 test('the statistic only offers the play modes the project actually stores', () => {

@@ -443,7 +443,7 @@ function serverModeBadge(value) {
 function renderPublicRoster() {
   const publicEntries = state.publicEntries.map((entry) => ({ ...entry, role: raidRole(entry) }));
   // The statistic describes the complete roster, independently of role and class filters.
-  $("#public-roster-scope").textContent = `${publicEntries.length} Rückmeldungen`;
+  $("#public-roster-scope").textContent = `${publicEntries.length} ${publicEntries.length === 1 ? "Vote" : "Votes"}`;
   renderModePreferences($("#public-mode-stats"), publicEntries);
   const roleFilter = $("#public-filter-role").value;
   const classFilter = $("#public-filter-class");
@@ -543,26 +543,24 @@ function renderStats() {
   }
 }
 
-function chartRow(label, count, share = 0, icon = "") {
+function chartRow(label, count, max, share = null) {
   const row = element("div", "chart-row");
-  if (icon) {
-    const image = document.createElement("img");
-    image.className = "chart-icon";
-    image.src = iconUrl(icon);
-    image.alt = "";
-    row.append(image);
-  }
   const track = element("div", "chart-track");
   const fill = element("span", "chart-fill");
-  // The bar length is the reported percentage itself, so bar and number always agree.
-  const width = Math.max(0, Math.min(100, Number.isFinite(share) ? share : 0));
+  const width = share === null
+    ? Math.max(0, Math.min(100, (count / Math.max(max, 1)) * 100))
+    : Math.max(0, Math.min(100, Number.isFinite(share) ? share : 0));
   fill.style.width = `${width}%`;
   track.append(fill);
-  // The share is written out as text, so the bars never rely on colour or length alone.
+  // The share is written out next to the bar only where the row reports one, so bar and number
+  // always agree and rows without a share keep the compact three-column layout.
   row.setAttribute("role", "img");
-  row.setAttribute("aria-label", `${label}: ${count} Spieler, ${share} %`);
-  row.append(element("span", "chart-label", label), track, element("strong", "chart-count", count),
-    element("span", "chart-share", `${share} %`));
+  row.setAttribute("aria-label", share === null ? `${label}: ${count} Spieler` : `${label}: ${count} Spieler, ${share} %`);
+  row.append(element("span", "chart-label", label), track, element("strong", "chart-count", count));
+  if (share !== null) {
+    row.classList.add("chart-row-share");
+    row.append(element("span", "chart-share", `${share} %`));
+  }
   return row;
 }
 
@@ -577,7 +575,14 @@ function renderModePreferences(target, entries) {
   }
   const chart = element("div", "bar-chart mode-chart");
   for (const row of stats.rows) {
-    chart.append(chartRow(serverModeLabel(row.mode), row.count, row.share, serverModeIcons[row.mode]));
+    const line = chartRow(serverModeLabel(row.mode), row.count, 0, row.share);
+    // Same play-mode artwork as the registration form, so both surfaces read alike.
+    const image = document.createElement("img");
+    image.className = "chart-icon";
+    image.src = iconUrl(serverModeIcons[row.mode]);
+    image.alt = "";
+    line.prepend(image);
+    chart.append(line);
   }
   target.append(chart);
   // The form requires a mode, so this can only appear for incomplete legacy records.
@@ -650,7 +655,7 @@ function renderMostAvailability(entries, prefix = "") {
       element("small", "availability-attendance", `Mind. ${best.availableCount} von ${best.count}`));
     slots.append(slot);
   }
-  const summary = `Mehr Spielraum mit ${best.availableCount} von ${best.count} Teilnehmern: zusätzliche Tage oder längere Zeitfenster gegenüber „Alle“. In jedem Fenster kann dieselbe Gruppe durchgehend; zeitweise können weitere Teilnehmer dazukommen. Die Gruppe kann je nach Fenster unterschiedlich sein.`;
+  const summary = `Gute Optionen mit ${best.availableCount} von ${best.count} Teilnehmern: zusätzliche Tage oder längere Zeitfenster gegenüber „Alle“. In jedem Fenster kann dieselbe Gruppe durchgehend; zeitweise können weitere Teilnehmer dazukommen. Die Gruppe kann je nach Fenster unterschiedlich sein.`;
   target.append(slots, element("p", "common-caption", summary));
   if (best.excludedCount) target.append(element("p", "common-caption",
     `${best.excludedCount} Rückmeldungen mit unvollständigen Zeitangaben sind noch nicht berücksichtigt.`));

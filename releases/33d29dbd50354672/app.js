@@ -673,20 +673,18 @@ function renderAverageRaidDays(entries, prefix = "") {
   const counts = new Map();
   for (const value of values) counts.set(value, (counts.get(value) || 0) + 1);
 
-  // Same shape as the slots of the other two cards: a green bordered box with the headline number.
-  const slot = element("div", "common-slot");
-  slot.append(element("strong", "", averageText), element("span", "", `Tage im Schnitt · ${values.length} ${values.length === 1 ? "Angabe" : "Angaben"}`));
-  const slots = element("div", "common-slots");
-  slots.append(slot);
-  target.append(slots);
+  const summary = element("div", "average-summary");
+  summary.append(element("strong", "", averageText), element("span", "", values.length === 1 ? "Tag im Schnitt (1 Angabe)" : "Tage im Schnitt"));
+  target.append(summary);
 
+  const share = (count) => Math.round((count / values.length) * 100);
   const chart = element("div", "bar-chart");
   for (const value of [...counts.keys()].sort((a, b) => a - b)) {
     const count = counts.get(value);
-    chart.append(chartRow(`${value} ${value === 1 ? "Tag" : "Tage"}`, count, values.length, Math.round((count / values.length) * 100)));
+    chart.append(chartRow(`${value} ${value === 1 ? "Tag" : "Tage"}`, count, values.length, share(count)));
   }
   target.append(chart);
-  target.append(element("p", "common-caption", "Verteilung der angegebenen maximalen Raidtage pro Woche."));
+  target.append(element("p", "common-caption", `Grundlage: ${values.length} ${values.length === 1 ? "Angabe" : "Angaben"} mit maximaler Raidtag-Zahl.`));
 }
 
 function renderPublicInsights(error = "") {

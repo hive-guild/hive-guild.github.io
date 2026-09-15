@@ -316,13 +316,10 @@ async function submitRegistration(event) {
   showError($("#form-error"), "");
   if (!form.reportValidity()) return;
   const entry = readForm();
-  if (!entry.race || !entry.class_name) {
-    showError($("#form-error"), "Bitte wähle Rasse und Klasse aus.");
+  if (!entry.race || !entry.class_name || !entry.spec) {
+    showError($("#form-error"), "Bitte wähle Rasse, Klasse und Spec aus.");
     return;
   }
-  // Without a class there is no spec to pick, and the column requires a value: the field stores the
-  // same placeholder the picker offers, so "not sure yet" is a complete answer.
-  if (!entry.spec) entry.spec = "Not sure yet";
   if (!isRaceClassAllowed(entry.race, entry.class_name)) {
     showError($("#form-error"), "Bitte wähle eine gültige Race-/Class-Kombination für die Horde.");
     return;

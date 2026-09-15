@@ -126,14 +126,20 @@ test('Skyborne ships its own portrait and no placeholder artwork', () => {
   assert.match(html, /Skyborne: offizielles Forever-Charakterbild/);
 });
 
-test('the race portraits keep their pre-session tile treatment', () => {
+test('the race portraits show their own frame on both pages', () => {
   const css = readFileSync(fileURLToPath(new URL('../dist/styles.css', import.meta.url)), 'utf8');
-  // The framed plate on the roster tile is back, and the form tile has its own backdrop again.
-  assert.match(css, /\.public-race-icon\{[^}]*object-fit:contain[^}]*background:#121720[^}]*border:1px solid #46404a\}/);
-  assert.match(css, /\.choice-icon\[src\*="race-"\]\{object-fit:contain;border-radius:4px;background:radial-gradient\(/);
-  // Neither the rolled back edge mask nor the overlay override may linger.
-  assert.ok(!/mask-image:radial-gradient\(115%/.test(css), 'the rolled-back race mask is still in the stylesheet');
-  assert.ok(!/race-"\][^{]*box-shadow:none/.test(css), 'the removed frame override is still in the stylesheet');
+  // The portraits carry their frame in the artwork, so neither tile draws one and both fit the
+  // image to the box: cover on the roster tile and on the form tile.
+  const roster = css.match(/\.public-race-icon\{([^}]*)\}/);
+  assert.ok(roster, 'no roster race icon rule');
+  assert.match(roster[1], /object-fit:cover/, 'the roster tile crops the frame away');
+  assert.ok(!/padding|background|border:/.test(roster[1]), 'the roster tile draws a second frame');
+  const form = css.match(/\.choice-icon\[src\*="race-"\]\{([^}]*)\}/);
+  assert.ok(form, 'no form race icon rule');
+  assert.match(form[1], /object-fit:cover/);
+  assert.ok(!/background|box-shadow/.test(form[1]), 'the form tile draws a second frame');
+  // The mobile rule must not bring the inset back.
+  assert.ok(!/public-race-icon\{width:42px;height:42px;padding/.test(css), 'the mobile tile still insets the artwork');
 });
 
 test('the statistic only offers the play modes the project actually stores', () => {

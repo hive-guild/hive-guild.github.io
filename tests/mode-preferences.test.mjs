@@ -111,3 +111,12 @@ test('the statistic never publishes more than counts and shares', () => {
   for (const row of stats.rows) assert.deepEqual(Object.keys(row).sort(), ['count', 'mode', 'share']);
   assert.ok(!JSON.stringify(stats).includes('Secret'));
 });
+
+test('the registration form previews the same role the roster would show', () => {
+  // The live preview must not contradict the derivation, e.g. for a class without a spec.
+  assert.match(appSource, /const derivedRole = \(\) => raidRole\(\{ class_name: choice\("class"\), spec: choice\("spec"\) \}\);/);
+  assert.match(appSource, /const role = choice\("class"\) \? derivedRole\(\) : "–";/);
+  // The old second spec table is gone; the picker reads the central one.
+  assert.equal([...appSource.matchAll(/specs: Object\.entries\(raidClassSpecs\[name\]\)/g)].length, 1);
+  assert.ok(!/specs: \[\["/.test(appSource), 'app.js still contains a duplicated spec table');
+});

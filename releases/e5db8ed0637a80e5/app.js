@@ -543,8 +543,15 @@ function renderStats() {
   }
 }
 
-function chartRow(label, count, share = 0) {
+function chartRow(label, count, share = 0, icon = "") {
   const row = element("div", "chart-row");
+  if (icon) {
+    const image = document.createElement("img");
+    image.className = "chart-icon";
+    image.src = iconUrl(icon);
+    image.alt = "";
+    row.append(image);
+  }
   const track = element("div", "chart-track");
   const fill = element("span", "chart-fill");
   // The bar length is the reported percentage itself, so bar and number always agree.
@@ -569,14 +576,10 @@ function renderModePreferences(target, entries) {
     return;
   }
   const chart = element("div", "bar-chart mode-chart");
-  for (const row of stats.rows) chart.append(chartRow(serverModeLabel(row.mode), row.count, row.share));
-  const total = element("p", "common-caption mode-total");
-  total.append(element("strong", "", `${stats.total} Spieler`),
-    document.createTextNode(" im Kader · Anteil je Spielmodus an allen Rückmeldungen"));
-  target.append(chart, total);
-  target.append(element("p", "common-caption", stats.multiple
-    ? "Mehrfachauswahl möglich: Ein Spieler kann in mehreren Spielmodi gezählt werden, die Prozentwerte addieren sich daher nicht zwingend zu 100 %."
-    : "Jeder Spieler hat genau einen bevorzugten Spielmodus, deshalb ergeben die Anteile zusammen 100 %."));
+  for (const row of stats.rows) {
+    chart.append(chartRow(serverModeLabel(row.mode), row.count, row.share, serverModeIcons[row.mode]));
+  }
+  target.append(chart);
   // The form requires a mode, so this can only appear for incomplete legacy records.
   if (stats.uncounted) target.append(element("p", "common-caption", `Für ${stats.uncounted} ${stats.uncounted === 1 ? "Rückmeldung" : "Rückmeldungen"} liegt kein Spielmodus vor; sie sind in keiner der Anteile enthalten.`));
 }

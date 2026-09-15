@@ -250,12 +250,13 @@ button.public-stat:disabled{cursor:default;opacity:.6}
 .mode-card-head h3{margin:8px 0 0}
 .mode-scope{flex:none;text-align:right;color:#8f97a3;font-size:12px;font-weight:700;letter-spacing:.06em;line-height:1.5;text-transform:uppercase}
 .mode-chart{grid-template-columns:minmax(96px,auto);gap:11px}
-.mode-stats .chart-row{grid-template-columns:minmax(96px,auto) minmax(0,1fr) 26px 46px;gap:9px}
+.mode-stats .chart-row{grid-template-columns:32px minmax(96px,auto) minmax(0,1fr) 26px 46px;gap:9px}
 .mode-stats .chart-label{font-size:12px}
 .mode-stats .chart-count{font-size:14px}
 .mode-stats .chart-share{text-align:right;color:#b8c4ca;font-variant-numeric:tabular-nums}
 .mode-stats .chart-track{height:10px}
-.mode-stats .chart-fill{background:linear-gradient(90deg,#2f6a70,#65caa6);box-shadow:0 0 10px rgba(101,202,166,.24)}
-.mode-total strong{color:var(--text)}
+/* Same play-mode artwork as the registration form, so both surfaces read alike. */
+.chart-icon{width:32px;height:32px;object-fit:contain;flex:none;border-radius:6px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 5px 12px rgba(0,0,0,.24)}
+.mode-stats .chart-fill{background:linear-gradient(90deg,#8f2033,#e83d52 55%,#ff5265);box-shadow:0 0 10px rgba(232,61,82,.3)}
 @media(max-width:900px){.mode-card-head{align-items:start;flex-direction:column;gap:6px}.mode-scope{text-align:left}}
-@media(max-width:620px){.mode-card{padding:21px}.mode-stats .chart-row{grid-template-columns:minmax(78px,auto) minmax(0,1fr) 22px 40px;gap:7px}.mode-stats .chart-label{font-size:11px}}
+@media(max-width:620px){.mode-card{padding:21px}.mode-stats .chart-row{grid-template-columns:28px minmax(78px,auto) minmax(0,1fr) 22px 40px;gap:7px}.mode-stats .chart-label{font-size:11px}.chart-icon{width:28px;height:28px}}

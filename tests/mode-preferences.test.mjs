@@ -95,15 +95,19 @@ test('overview and admin panel render the statistic through one shared function 
   // Every mode row carries the same artwork the registration form uses.
   assert.match(appSource, /chartRow\(serverModeLabel\(row\.mode\), row\.count, 0, row\.share\)/);
   assert.match(appSource, /image\.src = iconUrl\(serverModeIcons\[row\.mode\]\)/);
-  // The percentage column only exists where a row reports a share, so the day and time bars keep
-  // their compact three-column layout and never render a stray "0 %" cell.
+  // The percentage column only exists where a row reports a share, so a bar without one keeps the
+  // compact three-column layout and never renders a stray "0 %" cell.
   assert.match(appSource, /if \(share !== null\) \{\n    row\.classList\.add\("chart-row-share"\);/);
-  assert.equal([...appSource.matchAll(/chartRow\(dayLabels\[day\], dayCounts\[index\], Math\.max\(\.\.\.dayCounts, 1\)\)/g)].length, 1);
-  assert.equal([...appSource.matchAll(/chartRow\(time, counts\[index\], Math\.max\(\.\.\.counts, 1\)\)/g)].length, 1);
+  assert.match(appSource, /const width = share === null\n    \? Math\.max\(0, Math\.min\(100, \(count \/ Math\.max\(max, 1\)\) \* 100\)\)/);
+  // Day and time bars report their share of the whole roster, like the mode statistic does.
+  assert.match(appSource, /chartRow\(dayLabels\[day\], dayCounts\[index\], Math\.max\(\.\.\.dayCounts, 1\), attendanceShare\(dayCounts\[index\]\)\)/);
+  assert.match(appSource, /chartRow\(time, counts\[index\], Math\.max\(\.\.\.counts, 1\), attendanceShare\(counts\[index\]\)\)/);
+  assert.match(appSource, /const attendanceShare = \(count\) => entries\.length \? Math\.round\(\(count \/ entries\.length\) \* 100\) : 0;/);
   assert.ok(!/chartRow\([^)]*,[^)]*,[^)]*,[^)]*,/.test(appSource), 'chartRow called with too many arguments');
-  // No extra explanation lines below the bars; the card head names the scope instead.
+  // No extra explanation lines below the bars; the card heads name the scope instead.
   assert.ok(!/mode-total/.test(appSource), 'stale caption element still rendered');
   assert.ok(!/ergeben die Anteile zusammen/.test(appSource), 'removed share explanation still rendered');
+  assert.ok(!/zusätzliche Tage oder längere Zeitfenster/.test(appSource), 'removed alternative summary still rendered');
 });
 
 test('the public statistic describes the unfiltered roster and says so', () => {

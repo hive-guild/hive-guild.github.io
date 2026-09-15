@@ -246,7 +246,12 @@ test('the statistic never publishes more than counts and shares', () => {
 test('the registration form previews the same role the roster would show', () => {
   // The live preview must not contradict the derivation, e.g. for a class without a spec.
   assert.match(appSource, /const derivedRole = \(\) => raidRole\(\{ class_name: choice\("class"\), spec: choice\("spec"\) \}\);/);
-  assert.match(appSource, /const role = choice\("class"\) \? derivedRole\(\) : "–";/);
+  // The field only appears once a spec is picked, so no role is announced for a bare class.
+  assert.match(appSource, /const chosenSpec = choice\("spec"\);\n  const panel = \$\("#role-result"\);\n  panel\.hidden = !chosenSpec;\n  if \(!chosenSpec\) return;/);
+  assert.match(appSource, /const role = derivedRole\(\);\n  const display = \$\("#derived-role"\);/);
+  // It starts hidden in the markup as well, so nothing flashes before the first update.
+  const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
+  assert.match(html, /<div id="role-result" class="role-result" aria-live="polite" hidden>/);
   // The old second spec table is gone; the picker reads the central one.
   assert.equal([...appSource.matchAll(/specs: Object\.entries\(raidClassSpecs\[name\]\)/g)].length, 1);
   assert.ok(!/specs: \[\["/.test(appSource), 'app.js still contains a duplicated spec table');

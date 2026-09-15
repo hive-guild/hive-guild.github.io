@@ -13,10 +13,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./releases/4ccc572928ab83bf/styles.css" />
-    <script type="module" src="./releases/4ccc572928ab83bf/app.js"></script>
+    <link rel="stylesheet" href="./releases/14ab0d5c7f3868be/styles.css" />
+    <script type="module" src="./releases/14ab0d5c7f3868be/app.js"></script>
   </head>
   <body>
+    <!-- Keyboard users reach the content without tabbing through the whole navigation. -->
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
     <div class="site-shell">
       <header class="site-header">
         <a class="brand" href="#/willkommen" aria-label="HIVE Startseite">
@@ -32,7 +34,7 @@
         <button class="menu-toggle" type="button" aria-label="Menü öffnen" aria-expanded="false">☰</button>
       </header>
 
-      <main>
+      <main id="main" tabindex="-1">
         <section id="welcome-view" class="view welcome-view" aria-labelledby="welcome-title">
           <div class="hero-grid">
             <div class="hero-copy">

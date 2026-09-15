@@ -10,10 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check frontend and versioned pages
+      # The SQL check runs the schema against a real PostgreSQL engine in WASM, so the dependency
+      # has to be there. The build itself does not need any packages.
+      - name: Install check dependencies
+        run: npm install --ignore-scripts
+      # Every module the pages load, not only the two entry files: raid-roles.js and
+      # availability.js ship as their own versioned files, so a typo there would reach the live
+      # page even though app.js still parses.
+      - name: Check every frontend module
         run: |
-          node --check dist/app.js
-          node --check dist/config.js
-          node --test tests/*.test.mjs
+          for file in dist/app.js dist/config.js dist/raid-roles.js dist/availability.js dist/race-classes.js dist/vendor/supabase-auth.js; do
+            node --check "$file"
+          done
+      - name: Run frontend tests
+        run: node --test tests/*.test.mjs
+      # Guards the coupling between db/supabase.sql and dist/raid-roles.js: the role of every
+      # class/spec combination, the stored values and what the public roster exposes.
+      - name: Validate the database schema
+        run: node scripts/validate-sql.mjs
+      - name: Rebuild the versioned pages and require a clean tree
+        run: |
           node scripts/build-pages.mjs
           git diff --exit-code -- dist

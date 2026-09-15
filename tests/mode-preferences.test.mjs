@@ -105,50 +105,33 @@ test('the "noch nicht sicher" artwork stays the single question-mark asset', () 
   assert.ok(!/if \(option\.role\) \{\s*\n\s*const roleIcon/.test(appSource), 'the preview is back on the flexible tile');
 });
 
-test('every role points at its own artwork file', () => {
-  // The ranged role used to reuse the hunter class file, so editing one silently changed both.
+test('every icon the role map names is actually shipped', () => {
+  // The artwork itself is back at its pre-session state, so this only guards the references.
   const map = appSource.match(/const roleIcons = \{([^}]*)\};/);
   assert.ok(map, 'no role icon map');
   const files = [...map[1].matchAll(/"([a-z0-9-]+\.(?:jpg|png))"/g)].map((m) => m[1]);
   assert.ok(files.length >= 5, 'the role icon map lost entries');
-  assert.ok(!files.includes('class-hunter.jpg'), 'a role still borrows the hunter class artwork');
-  assert.ok(files.includes('role-ranged-dps.jpg'), 'the ranged role has no own artwork');
   for (const file of new Set(files)) {
     assert.ok(existsSync(iconPath(file)), `${file} is referenced but missing`);
   }
-  // Role and class artwork must not overlap any more.
-  const classFiles = new Set([...appSource.matchAll(/class: "([a-z-]+)"/g)].map((m) => `class-${m[1]}.jpg`));
-  for (const file of files) {
-    assert.ok(!classFiles.has(file), `${file} is used as class and role artwork`);
-  }
 });
 
-test('Skyborne ships its own portrait and no placeholder artwork', () => {
-  assert.ok(existsSync(iconPath('race-skyborne.png')), 'race-skyborne.png is missing');
-  assert.match(appSource, /\{ name: "Skyborne", icon: "race-skyborne\.png" \}/);
-  assert.ok(!/elf-ear/.test(appSource), 'app.js still points at the retired placeholder');
-  // No race icon may reference the retired ear artwork any more.
-  assert.ok(!existsSync(iconPath('elf-ear.svg')), 'the retired placeholder is still shipped');
+test('Skyborne falls back to the credited placeholder while no portrait is picked', () => {
+  assert.ok(existsSync(iconPath('elf-ear.svg')), 'the credited placeholder is missing');
+  assert.match(appSource, /\{ name: "Skyborne", icon: "elf-ear" \}/);
   const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
-  assert.ok(!/Elf ear|elf-ear\.html/.test(html), 'the footer still credits the removed placeholder');
-  assert.match(html, /Skyborne: offizielles Forever-Charakterbild/);
+  assert.match(html, /Skyborne-Platzhalter: <a href="https:\/\/game-icons\.net\/1x1\/delapouite\/elf-ear\.html"/);
+  assert.match(html, /CC BY 3\.0/);
 });
 
-test('the race portraits are shown without a frame and are never cropped', () => {
+test('the race portraits keep their pre-session tile treatment', () => {
   const css = readFileSync(fileURLToPath(new URL('../dist/styles.css', import.meta.url)), 'utf8');
-  // The framed plate is gone: the portrait is fitted into its box on all pages.
-  const roster = css.match(/\.public-race-icon\{([^}]*)\}/);
-  assert.ok(roster, 'no roster race icon rule');
-  // contain, not cover: the portraits are taller than the tile and cropping cut the head off.
-  assert.match(roster[1], /object-fit:contain/);
-  assert.ok(!/padding|background|border/.test(roster[1]), 'the roster tile still draws a frame');
-  const form = css.match(/\.choice-icon\[src\*="race-"\]\{([^}]*)\}/);
-  assert.ok(form, 'no form race icon rule');
-  assert.match(form[1], /object-fit:contain/);
-  assert.ok(!/background:/.test(form[1]), 'the form tile still draws a backdrop');
-  assert.match(form[1], /box-shadow:none/, 'the form tile still draws a hairline');
-  // And no leftover edge mask from the rolled back attempt.
+  // The framed plate on the roster tile is back, and the form tile has its own backdrop again.
+  assert.match(css, /\.public-race-icon\{[^}]*object-fit:contain[^}]*background:#121720[^}]*border:1px solid #46404a\}/);
+  assert.match(css, /\.choice-icon\[src\*="race-"\]\{object-fit:contain;border-radius:4px;background:radial-gradient\(/);
+  // Neither the rolled back edge mask nor the overlay override may linger.
   assert.ok(!/mask-image:radial-gradient\(115%/.test(css), 'the rolled-back race mask is still in the stylesheet');
+  assert.ok(!/race-"\][^{]*box-shadow:none/.test(css), 'the removed frame override is still in the stylesheet');
 });
 
 test('the statistic only offers the play modes the project actually stores', () => {

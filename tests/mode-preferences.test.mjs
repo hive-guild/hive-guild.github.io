@@ -228,10 +228,11 @@ test('overview and admin panel render the statistic through one shared function 
   // compact three-column layout and never renders a stray "0 %" cell.
   assert.match(appSource, /if \(share !== null\) \{\n    row\.classList\.add\("chart-row-share"\);/);
   assert.match(appSource, /const width = share === null\n    \? Math\.max\(0, Math\.min\(100, \(count \/ Math\.max\(max, 1\)\) \* 100\)\)/);
-  // Day and time bars report their share of the whole roster, like the mode statistic does.
-  assert.match(appSource, /chartRow\(dayLabels\[day\], dayCounts\[index\], Math\.max\(\.\.\.dayCounts, 1\), attendanceShare\(dayCounts\[index\]\)\)/);
-  assert.match(appSource, /chartRow\(time, counts\[index\], Math\.max\(\.\.\.counts, 1\), attendanceShare\(counts\[index\]\)\)/);
-  assert.match(appSource, /const attendanceShare = \(count\) => entries\.length \? Math\.round\(\(count \/ entries\.length\) \* 100\) : 0;/);
+  // The day and time charts are gone; only the mode statistic and the two collapsible availability
+  // cards carry bars now.
+  assert.ok(!/day-chart|time-chart/.test(appSource), 'a removed day or time chart is still rendered');
+  assert.ok(!/day-chart|time-chart/.test(readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8')), 'a removed day or time chart is still in the markup');
+  assert.ok(!/attendanceShare/.test(appSource), 'the share helper of the removed charts is still there');
   assert.ok(!/chartRow\([^)]*,[^)]*,[^)]*,[^)]*,/.test(appSource), 'chartRow called with too many arguments');
   // No extra explanation lines below the bars; the card heads name the scope instead.
   assert.ok(!/mode-total/.test(appSource), 'stale caption element still rendered');

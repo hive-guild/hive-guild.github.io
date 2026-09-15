@@ -249,7 +249,8 @@ test('the availability cards carry only their labels, slots and shares', () => {
   assert.ok(!/gemeinsam maximal/.test(appSource), 'removed availability summary still rendered');
   assert.match(appSource, /\/\/ The slots above already carry the day and the time window; no extra summary line\.\n    target\.append\(slots\);/);
   // The alternative card keeps its own label and no long summary either.
-  assert.equal([...html.matchAll(/section-index">GUTE OPTIONEN</g)].length, 2);
+  assert.equal([...html.matchAll(/section-index">BESTER KOMPROMISS</g)].length, 2);
+  assert.ok(!/GUTE OPTIONEN/.test(html), 'the retired GUTE OPTIONEN label is still present');
   assert.ok(!/zusätzliche Tage oder längere Zeitfenster/.test(appSource), 'removed alternative summary still rendered');
 });
 

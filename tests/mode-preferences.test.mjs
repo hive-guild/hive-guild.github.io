@@ -272,7 +272,7 @@ test('the registration form previews the same role the roster would show', () =>
   // The field appears as soon as the role is certain: with a spec, or with a class whose specs all
   // cover one role. An ambiguous class stays hidden until its spec is picked.
   assert.match(appSource, /const panel = \$\("#role-result"\);\n  if \(!chosenSpec && !uniqueClassRole\(className\)\) \{\n    panel\.hidden = true;\n    return;\n  \}\n  panel\.hidden = false;/);
-  assert.match(appSource, /import \{\n  raidRole, raidRoleOrder, raidRoleClass, raidClassSpecs, classNames, serverModes,\n  serverModeLabel, modePreferenceStats, uniqueClassRole,\n\} from "\.\/raid-roles\.js";/);
+  assert.match(appSource, /import \{\n  raidRole, raidRoleOrder, raidRoleClass, raidClassSpecs, classNames, serverModes,\n  serverModeLabel, modePreferenceStats, uniqueClassRole, raidRoleLabel,\n\} from "\.\/raid-roles\.js";/);
   // It starts hidden in the markup as well, so nothing flashes before the first update.
   const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
   assert.match(html, /<div id="role-result" class="role-result" aria-live="polite" hidden>/);

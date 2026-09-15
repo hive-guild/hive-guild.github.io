@@ -500,7 +500,7 @@ function renderPublicRoster() {
     const tile = element("button", `public-stat role-${raidRoleClass(role)}`);
     tile.type = "button";
     tile.disabled = count === 0;
-    tile.setAttribute("aria-label", count ? `Zu ${raidRoleLabel(role)} springen (${count})` : `${raidRoleLabel(role)}: keine Einträge`);
+    tile.setAttribute("aria-label", count ? `Zu ${role} springen (${count})` : `${role}: keine Einträge`);
     tile.addEventListener("click", () => {
       $("#public-filter-role").value = "";
       $("#public-filter-class").value = "";
@@ -513,7 +513,7 @@ function renderPublicRoster() {
     const icon = document.createElement("img");
     icon.src = iconUrl(roleIcons[role]);
     icon.alt = "";
-    tile.append(icon, element("span", "", raidRoleLabel(role)), element("strong", "", count));
+    tile.append(icon, element("span", "", role), element("strong", "", count));
     stats.append(tile);
   }
   const list = $("#public-list");

@@ -18,7 +18,7 @@ test('every play mode has one artwork file used by all three surfaces', () => {
   const icons = Object.fromEntries(
     [...appSource.matchAll(/(PVE|PVP|ANY): "([^"]+)"/g)].map((match) => [match[1], match[2]]),
   );
-  assert.deepEqual(icons, { PVE: 'mode-peace.svg', PVP: 'server-pvp-art.png', ANY: 'mode-shrug.svg' });
+  assert.deepEqual(icons, { PVE: 'mode-peace.svg', PVP: 'mode-pvp.svg', ANY: 'mode-shrug.svg' });
   for (const file of Object.values(icons)) {
     assert.ok(existsSync(iconPath(file)), `missing artwork ${file}`);
   }
@@ -26,7 +26,59 @@ test('every play mode has one artwork file used by all three surfaces', () => {
   assert.match(appSource, /const serverModeChoices = serverModes\.map\(\(mode\) => \(\{ \.\.\.mode, icon: serverModeIcons\[mode\.name\] \}\)\);/);
   assert.match(appSource, /icon\.src = iconUrl\(serverModeIcons\[value\]\);/);
   // The replaced AI motifs must not be referenced anywhere anymore.
-  assert.ok(!/server-pve-art\.png|server-any-art\.png/.test(appSource), 'a removed icon file is still referenced');
+  assert.ok(!/server-pve-art\.png|server-any-art\.png|server-pvp-art\.png/.test(appSource), 'a removed icon file is still referenced');
+});
+
+test('every bar in a chart starts at the same x position', () => {
+  const css = readFileSync(fileURLToPath(new URL('../dist/styles.css', import.meta.url)), 'utf8');
+  // A fixed label column is what keeps the bars aligned; max-content made short labels shift the
+  // bar to the left and faked a different bar length.
+  assert.match(css, /\.chart-row-share\{grid-template-columns:72px minmax\(48px,1fr\) 26px 46px;gap:9px\}/);
+  assert.match(css, /\.mode-stats \.chart-row-share\{grid-template-columns:32px 84px minmax\(48px,1fr\) 26px 46px\}/);
+  assert.ok(!/chart-row-share\{grid-template-columns:[^}]*max-content/.test(css), 'the label column still grows with its content');
+  const rows = [...css.matchAll(/\.chart-row-share\{grid-template-columns:([^}]*)\}/g)].map((m) => m[1]);
+  for (const row of rows) {
+    assert.ok(!/max-content|auto/.test(row), `row definition is content-sized: ${row}`);
+  }
+  // A media query does not raise specificity, so inside every breakpoint the four-column insight
+  // rule must come before the five-column play-mode rule. Otherwise the narrow-viewport rule
+  // flattens the mode rows and the bars collapse to a sliver.
+  for (const block of css.matchAll(/@media\([^)]*\)\{([^@]*)\}/g)) {
+    const body = block[1];
+    const insight = body.indexOf('.insight-card .chart-row-share');
+    const mode = body.indexOf('.mode-stats .chart-row-share');
+    if (insight !== -1 && mode !== -1) {
+      assert.ok(insight < mode, 'the plan-mode column rule must come after the insight rule');
+      assert.equal([...body.matchAll(/\.mode-stats \.chart-row-share\{grid-template-columns:(\d+)px (\d+)px/g)].length, 1);
+    }
+  }
+  // Locate the 620px block that redefines the chart columns (there are several 620px blocks).
+  const at = css.indexOf('.mode-stats .chart-row-share{grid-template-columns:28px 68px');
+  assert.ok(at > 0, 'the narrow-viewport play-mode columns are missing');
+  const blockStart = css.lastIndexOf('@media(max-width:620px)', at);
+  assert.ok(blockStart > 0, 'the play-mode columns are not inside the 620px breakpoint');
+  const block = css.slice(blockStart, css.indexOf('\n', at));
+  assert.match(block, /\.insight-card \.chart-row-share\{grid-template-columns:56px minmax\(40px,1fr\) 22px 40px/);
+  assert.ok(block.indexOf('.insight-card .chart-row-share') < block.indexOf('.mode-stats .chart-row-share'),
+    'inside the breakpoint the insight rule must come before the play-mode rule');
+});
+
+test('every role counter tile carries the same coloured top border', () => {
+  const css = readFileSync(fileURLToPath(new URL('../dist/styles.css', import.meta.url)), 'utf8');
+  const tiles = [...css.matchAll(/\.public-stat\.(role-[a-z-]+)\{([^}]*)\}/g)]
+    .map((match) => ({ role: match[1], body: match[2] }));
+  const roles = tiles.map((tile) => tile.role).sort();
+  // All five groups the overview renders, including the two DPS groups.
+  assert.deepEqual(roles, ['role-flexible', 'role-healer', 'role-melee-dps', 'role-ranged-dps', 'role-tank']);
+  for (const { role, body } of tiles) {
+    assert.match(body, /border-top:2px solid #/, `${role} has no coloured top border`);
+    assert.match(body, /--stat-accent:#/, `${role} has no accent for the hover transition`);
+  }
+  // The hover and the transition use that accent instead of a blanket border colour.
+  assert.match(css, /button\.public-stat:not\(:disabled\):hover\{border-top-color:var\(--stat-accent,var\(--text\)\)/);
+  assert.match(css, /button\.public-stat\{[^}]*transition:border-top-color \.2s,background-color \.2s,filter \.2s/);
+  // A blanket !important tint must not override the designed tile background.
+  assert.ok(!/\.public-stat\.role-(melee|ranged)-dps[^{]*\{[^}]*!important/.test(css), 'tile background is overridden with !important');
 });
 
 test('the imported emoji assets stay local, script-free and self-contained', () => {

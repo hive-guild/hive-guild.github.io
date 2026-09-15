@@ -42,14 +42,7 @@ const specIcons = {
   Rogue: { Combat: "spec-rogue-combat.jpg" },
   Druid: { "Feral (Bear)": "spec-druid-feral-bear.jpg", "Feral (Cat)": "spec-druid-feral-cat.jpg" },
 };
-// All Hive artwork lives in one package under assets/hive/<group>/. The name alone says which
-// group it belongs to, so the callers keep passing plain file names.
-const ART_GROUP = { class: "classes", spec: "specs", race: "races", role: "roles", mode: "modes" };
-const iconUrl = (name) => {
-  const [prefix] = name.split("-");
-  const group = ART_GROUP[prefix] ? `${ART_GROUP[prefix]}/` : "";
-  return `./assets/hive/${group}${name}${/\.(?:svg|jpe?g|png)$/i.test(name) ? "" : ".svg"}`;
-};
+const iconUrl = (name) => `./assets/hive/${name}${/\.(?:svg|jpe?g|png)$/i.test(name) ? "" : ".svg"}`;
 // Stored value -> what the roster shows. The picker tiles keep their own friendly label
 // ("Noch nicht sicher"); on a card the open answer reads "tbd", the same word the role uses.
 const displayChoice = (value) => value === "Not sure yet" ? "tbd" : value;

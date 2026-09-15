@@ -8,7 +8,13 @@ import {
 
 // Both surfaces must not only share the calculation but also render it identically.
 const appSource = readFileSync(fileURLToPath(new URL('../dist/app.js', import.meta.url)), 'utf8');
-const iconPath = (name) => fileURLToPath(new URL(`../dist/assets/icons/${name}`, import.meta.url));
+// All Hive artwork sits in one package, grouped by kind. iconUrl() in app.js derives the group
+// from the file name prefix; these tests look the files up the same way.
+const ART_GROUP = { class: 'classes', spec: 'specs', race: 'races', role: 'roles', mode: 'modes' };
+const iconPath = (name) => {
+  const group = ART_GROUP[name.split('-')[0]];
+  return fileURLToPath(new URL(`../dist/assets/hive/${group ? `${group}/` : ''}${name}`, import.meta.url));
+};
 
 const rowsOf = (entries) => modePreferenceStats(entries).rows;
 const byMode = (entries) => Object.fromEntries(rowsOf(entries).map((row) => [row.mode, row.count]));

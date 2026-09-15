@@ -1,5 +1,5 @@
 :root{color-scheme:dark;--bg:#090b10;--panel:#10131b;--panel-2:#161b25;--panel-3:#1d222d;--line:#303641;--line-soft:#252b35;--text:#f3f1ee;--muted:#a9adb7;--muted-2:#78808d;--red:#e83d52;--red-bright:#ff5265;--gold:#cfa66f;--font-display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;--font-body:'DM Sans',Arial,sans-serif}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.65 var(--font-body);-webkit-font-smoothing:antialiased}body::before{position:fixed;inset:0;z-index:-1;pointer-events:none;content:"";background:radial-gradient(ellipse 60% 30% at 78% 0%,rgba(184,39,54,.13),transparent 70%)}button,input,select,textarea{font:inherit}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit}button{cursor:pointer}[hidden]{display:none!important}.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.65 var(--font-body);-webkit-font-smoothing:antialiased}body::before{position:fixed;inset:0;z-index:-1;pointer-events:none;content:"";background:radial-gradient(ellipse 60% 30% at 78% 0%,rgba(184,39,54,.13),transparent 70%),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:auto,92px 92px}button,input,select,textarea{font:inherit}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit}button{cursor:pointer}[hidden]{display:none!important}.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* Skip link: out of sight until it is focused, then a real button above the header. Focused by
    keyboard it matches :focus-visible, clicked with a mouse :focus - both bring it into view. */
 .skip-link{position:absolute;left:12px;top:-100px;z-index:100;padding:12px 18px;background:#1c222d;border:1px solid #5fc2a4;color:#fff;font-weight:700;font-size:14px;text-decoration:none}
@@ -31,7 +31,7 @@ main:focus{outline:none}.site-shell{max-width:1680px;margin:auto;overflow:hidden
 
 /* Let the painted landscape fade into the next section instead of ending at the ticker. */
 .welcome-view{position:relative;isolation:isolate;background:radial-gradient(ellipse 90% 30% at 65% 35%,rgba(51,81,87,.17),transparent 75%),#0d1219}
-.welcome-view::before{content:"";position:absolute;z-index:-1;top:0;left:0;right:0;height:1120px;pointer-events:none;background:url("assets/forever-hero-art.png") center top/cover no-repeat;opacity:.82;-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.7) 68%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.7) 68%,transparent 100%)}
+.welcome-view::before{content:"";position:absolute;z-index:-1;top:0;left:0;right:0;height:1120px;pointer-events:none;background:url("../../assets/forever-hero-art.png") center top/cover no-repeat;opacity:.82;-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.7) 68%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.7) 68%,transparent 100%)}
 .hero-grid{background:linear-gradient(90deg,rgba(8,13,19,.86),rgba(8,13,19,.69) 45%,rgba(8,13,19,.26)),linear-gradient(0deg,rgba(10,14,20,.52),transparent 42%)}
 .hero-grid::before{left:0;right:0;bottom:0;height:95px;background:linear-gradient(180deg,transparent,rgba(12,17,24,.64));pointer-events:none}
 .hero-art::before{background:radial-gradient(circle at 51% 41%,rgba(89,151,158,.21),transparent 58%),radial-gradient(circle at 60% 66%,rgba(238,57,75,.12),transparent 63%);filter:blur(25px)}
@@ -121,7 +121,7 @@ main:focus{outline:none}.site-shell{max-width:1680px;margin:auto;overflow:hidden
 /* A quiet outer canvas and a distinct page surface replace the old stripe pattern. */
 body{background:#05080b}
 body::before{display:none}
-.site-shell{background:#101820;border-left:1px solid #232c35;border-right:1px solid #232c35;box-shadow:0 18px 50px rgba(0,0,0,.32)}
+.site-shell{background:#101820;border-left:1px solid #34414a;border-right:1px solid #34414a;box-shadow:0 0 0 1px rgba(0,0,0,.55),0 24px 90px rgba(0,0,0,.55)}
 .site-header{background:#0c131a;border-bottom-color:#38444c}
 .signup-view,.public-view,.admin-view{background:#101820}
 .page-intro{background:linear-gradient(115deg,#1a2730,#141d25 63%,#121920);border-bottom:1px solid transparent;border-image:linear-gradient(90deg,#1e2731,#2b3743 50%,#1e2731) 1}
@@ -145,13 +145,13 @@ body::before{display:none}
 
 /* Keep the WoW Forever emblem in the supplied artwork unobstructed. */
 .welcome-view::before{display:none}
-.hero-grid{min-height:clamp(660px,50vw,840px);grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);background:linear-gradient(90deg,rgba(8,13,19,.94),rgba(8,13,19,.84) 31%,rgba(8,13,19,.44) 49%,rgba(8,13,19,.05) 66%),linear-gradient(0deg,rgba(10,14,20,.66),transparent 28%),url("assets/wow-forever-background-hd.png") center center/cover no-repeat}
+.hero-grid{min-height:clamp(660px,50vw,840px);grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);background:linear-gradient(90deg,rgba(8,13,19,.94),rgba(8,13,19,.84) 31%,rgba(8,13,19,.44) 49%,rgba(8,13,19,.05) 66%),linear-gradient(0deg,rgba(10,14,20,.66),transparent 28%),url("../../assets/wow-forever-background-hd.png") center center/cover no-repeat}
 .hero-copy{padding:72px 0 64px}
 .hero-copy h1{font-size:clamp(72px,7vw,116px)}
 .hero-copy .overline{margin-top:32px}
 .hero-lead{max-width:490px;font-size:17px;color:#e1e3e7}
 
-@media(max-width:1050px){.hero-grid{min-height:0;grid-template-columns:1fr;background:linear-gradient(0deg,#0d1219,transparent 22%) center top/100% 56.3vw no-repeat,url("assets/wow-forever-background-hd.png") center top/100% auto no-repeat,#0d1219}.hero-copy{padding:calc(56.3vw + 16px) 0 46px}.hero-copy h1{font-size:clamp(64px,12vw,94px)}.hero-copy .overline{margin-top:28px}.hero-lead{max-width:580px;font-size:16px}}
+@media(max-width:1050px){.hero-grid{min-height:0;grid-template-columns:1fr;background:linear-gradient(0deg,#0d1219,transparent 22%) center top/100% 56.3vw no-repeat,url("../../assets/wow-forever-background-hd.png") center top/100% auto no-repeat,#0d1219}.hero-copy{padding:calc(56.3vw + 16px) 0 46px}.hero-copy h1{font-size:clamp(64px,12vw,94px)}.hero-copy .overline{margin-top:28px}.hero-lead{max-width:580px;font-size:16px}}
 
 .character-choice-help{display:flex;align-items:center;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;margin-top:25px;color:#a6b0bd;font-size:12px;line-height:1.5}
 .character-choice-help p{margin:0;flex:1 1 280px}.character-choice-help .text-button{font-size:12px;white-space:nowrap;padding:5px 0}
@@ -163,7 +163,7 @@ body::before{display:none}
 @media(max-width:760px){.discord-account{padding:24px}.discord-account h2{font-size:25px}}
 
 /* Landscape banners for signup and the public roster. */
-.signup-view .page-intro,.public-view .page-intro{background:linear-gradient(90deg,rgba(9,17,24,.9),rgba(9,17,24,.72) 48%,rgba(9,17,24,.38)),linear-gradient(0deg,#101820 0,rgba(9,17,24,.5) 26%,transparent 62%),url("assets/forever-hero-art.png") center 43%/cover no-repeat;border-bottom:0;text-shadow:0 2px 18px rgba(0,0,0,.45)}
+.signup-view .page-intro,.public-view .page-intro{background:linear-gradient(90deg,rgba(9,17,24,.9),rgba(9,17,24,.72) 48%,rgba(9,17,24,.38)),linear-gradient(0deg,#101820 0,rgba(9,17,24,.5) 26%,transparent 62%),url("../../assets/forever-hero-art.png") center 43%/cover no-repeat;border-bottom:0;text-shadow:0 2px 18px rgba(0,0,0,.45)}
 .public-view .page-intro{background-position:center,center,center 59%}
 .signup-view .page-intro p,.public-view .page-intro p{color:#e0e4e8}
 @media(max-width:760px){.signup-view .page-intro,.public-view .page-intro{background-position:center,center,40% center}}

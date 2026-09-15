@@ -41,6 +41,15 @@ test('the imported emoji assets stay local, script-free and self-contained', () 
   }
 });
 
+test('the "noch nicht sicher" artwork is the cleaned, uniformly dark asset', () => {
+  // It replaces a 56px JPEG whose bottom corners carried stray bright pixels.
+  assert.ok(existsSync(iconPath('role-flexible.png')), 'role-flexible.png is missing');
+  assert.ok(!existsSync(iconPath('role-flexible.jpg')), 'the noisy JPEG is still shipped');
+  assert.ok(!/role-flexible\.jpg/.test(appSource), 'app.js still points at the retired JPEG');
+  // Every place that shows the question mark uses that one file.
+  assert.equal([...appSource.matchAll(/role-flexible\.png/g)].length, 9);
+});
+
 test('the statistic only offers the play modes the project actually stores', () => {
   assert.deepEqual(serverModes.map((mode) => mode.name), ['PVE', 'PVP', 'ANY']);
   assert.equal(serverModeLabel('ANY'), 'Mir egal');

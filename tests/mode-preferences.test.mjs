@@ -105,23 +105,48 @@ test('the "noch nicht sicher" artwork stays the single question-mark asset', () 
   assert.ok(!/if \(option\.role\) \{\s*\n\s*const roleIcon/.test(appSource), 'the preview is back on the flexible tile');
 });
 
-test('Skyborne falls back to the credited placeholder while no portrait is picked', () => {
-  // The race artwork work was rolled back on request, so the placeholder is back in place and the
-  // footer has to credit it. Whoever adds a real Skyborne portrait updates this test with it.
-  assert.ok(existsSync(iconPath('elf-ear.svg')), 'the credited placeholder is missing');
-  assert.match(appSource, /\{ name: "Skyborne", icon: "elf-ear" \}/);
-  const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
-  assert.match(html, /Skyborne-Platzhalter: <a href="https:\/\/game-icons\.net\/1x1\/delapouite\/elf-ear\.html"/);
-  assert.match(html, /CC BY 3\.0/);
+test('every role points at its own artwork file', () => {
+  // The ranged role used to reuse the hunter class file, so editing one silently changed both.
+  const map = appSource.match(/const roleIcons = \{([^}]*)\};/);
+  assert.ok(map, 'no role icon map');
+  const files = [...map[1].matchAll(/"([a-z0-9-]+\.(?:jpg|png))"/g)].map((m) => m[1]);
+  assert.ok(files.length >= 5, 'the role icon map lost entries');
+  assert.ok(!files.includes('class-hunter.jpg'), 'a role still borrows the hunter class artwork');
+  assert.ok(files.includes('role-ranged-dps.jpg'), 'the ranged role has no own artwork');
+  for (const file of new Set(files)) {
+    assert.ok(existsSync(iconPath(file)), `${file} is referenced but missing`);
+  }
+  // Role and class artwork must not overlap any more.
+  const classFiles = new Set([...appSource.matchAll(/class: "([a-z-]+)"/g)].map((m) => `class-${m[1]}.jpg`));
+  for (const file of files) {
+    assert.ok(!classFiles.has(file), `${file} is used as class and role artwork`);
+  }
 });
 
-test('the race portraits are presented with the plain tile treatment', () => {
+test('Skyborne ships its own portrait and no placeholder artwork', () => {
+  assert.ok(existsSync(iconPath('race-skyborne.png')), 'race-skyborne.png is missing');
+  assert.match(appSource, /\{ name: "Skyborne", icon: "race-skyborne\.png" \}/);
+  assert.ok(!/elf-ear/.test(appSource), 'app.js still points at the retired placeholder');
+  // No race icon may reference the retired ear artwork any more.
+  assert.ok(!existsSync(iconPath('elf-ear.svg')), 'the retired placeholder is still shipped');
+  const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
+  assert.ok(!/Elf ear|elf-ear\.html/.test(html), 'the footer still credits the removed placeholder');
+  assert.match(html, /Skyborne: offizielles Forever-Charakterbild/);
+});
+
+test('every race portrait is edge to edge on black, without a frame', () => {
   const css = readFileSync(fileURLToPath(new URL('../dist/styles.css', import.meta.url)), 'utf8');
-  // The added edge mask was rolled back with the artwork, so no mask rule may linger.
+  // The framed plate is gone: the portrait fills its box on all pages.
+  const roster = css.match(/\.public-race-icon\{([^}]*)\}/);
+  assert.ok(roster, 'no roster race icon rule');
+  assert.match(roster[1], /object-fit:cover/);
+  assert.ok(!/padding|background|border/.test(roster[1]), 'the roster tile still draws a frame');
+  const form = css.match(/\.choice-icon\[src\*="race-"\]\{([^}]*)\}/);
+  assert.ok(form, 'no form race icon rule');
+  assert.ok(!/background:/.test(form[1]), 'the form tile still draws a backdrop');
+  assert.match(form[1], /box-shadow:none/, 'the form tile still draws a hairline');
+  // And no leftover edge mask from the rolled back attempt.
   assert.ok(!/mask-image:radial-gradient\(115%/.test(css), 'the rolled-back race mask is still in the stylesheet');
-  // The roster tile keeps its framed plate and the form tile keeps its own backdrop.
-  assert.match(css, /\.public-race-icon\{[^}]*background:#121720/);
-  assert.match(css, /\.choice-icon\[src\*="race-"\]\{object-fit:contain;border-radius:4px;background:radial-gradient\(/);
 });
 
 test('the statistic only offers the play modes the project actually stores', () => {

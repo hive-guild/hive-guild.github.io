@@ -94,14 +94,14 @@ test('the imported emoji assets stay local, script-free and self-contained', () 
 });
 
 test('the "noch nicht sicher" artwork stays the single question-mark asset', () => {
-  // It replaces a 56px JPEG whose bottom corners carried stray bright pixels. The artwork itself
-  // was reverted to its original version, so this only guards the file and the references.
-  assert.ok(existsSync(iconPath('role-flexible.png')), 'role-flexible.png is missing');
-  assert.ok(!existsSync(iconPath('role-flexible.jpg')), 'the noisy JPEG is still shipped');
-  assert.ok(!/role-flexible\.jpg/.test(appSource), 'app.js still points at the retired JPEG');
+  // The question mark is the Twemoji glyph now, in the JPEG format and size of the other role
+  // icons. One file serves every place that shows it.
+  assert.ok(existsSync(iconPath('role-flexible.jpg')), 'role-flexible.jpg is missing');
+  assert.ok(!existsSync(iconPath('role-flexible.png')), 'the retired PNG is still shipped');
+  assert.ok(!/role-flexible\.png/.test(appSource), 'app.js still points at the retired PNG');
   // The tile shows the question mark once: the role preview is skipped on these tiles, so the
   // flexible artwork appears in the data and the fallbacks only.
-  assert.match(appSource, /if \(option\.role && option\.icon !== "role-flexible\.png"\) \{/);
+  assert.match(appSource, /if \(option\.role && option\.icon !== "role-flexible\.jpg"\) \{/);
   assert.ok(!/if \(option\.role\) \{\s*\n\s*const roleIcon/.test(appSource), 'the preview is back on the flexible tile');
 });
 

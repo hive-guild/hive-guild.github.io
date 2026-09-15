@@ -35,9 +35,7 @@ const classes = classNames.map((name) => ({
 // and the admin panel.
 const serverModeIcons = { PVE: "mode-peace.svg", PVP: "mode-pvp.svg", ANY: "mode-shrug.svg" };
 const serverModeChoices = serverModes.map((mode) => ({ ...mode, icon: serverModeIcons[mode.name] }));
-// Every role has its own artwork: the ranged icon used to point at the hunter class file, so
-// touching one of them silently changed the other.
-const roleIcons = { "Melee DPS": "role-damage.jpg", "Ranged DPS": "role-ranged-dps.jpg", Tank: "role-tank.jpg", Healer: "role-healer.jpg", Damage: "role-damage.jpg", Flexible: "role-flexible.png" };
+const roleIcons = { "Melee DPS": "role-damage.jpg", "Ranged DPS": "class-hunter.jpg", Tank: "role-tank.jpg", Healer: "role-healer.jpg", Damage: "role-damage.jpg", Flexible: "role-flexible.png" };
 const specIcons = {
   Rogue: { Combat: "spec-rogue-combat.jpg" },
   Druid: { "Feral (Bear)": "spec-druid-feral-bear.jpg", "Feral (Cat)": "spec-druid-feral-cat.jpg" },

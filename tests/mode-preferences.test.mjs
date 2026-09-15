@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
   serverModes, serverModeLabel, modePreferenceStats, modePreferenceMultiple,
@@ -8,10 +8,38 @@ import {
 
 // Both surfaces must not only share the calculation but also render it identically.
 const appSource = readFileSync(fileURLToPath(new URL('../dist/app.js', import.meta.url)), 'utf8');
+const iconPath = (name) => fileURLToPath(new URL(`../dist/assets/icons/${name}`, import.meta.url));
 
 const rowsOf = (entries) => modePreferenceStats(entries).rows;
 const byMode = (entries) => Object.fromEntries(rowsOf(entries).map((row) => [row.mode, row.count]));
 const shareOf = (entries) => Object.fromEntries(rowsOf(entries).map((row) => [row.mode, row.share]));
+
+test('every play mode has one artwork file used by all three surfaces', () => {
+  const icons = Object.fromEntries(
+    [...appSource.matchAll(/(PVE|PVP|ANY): "([^"]+)"/g)].map((match) => [match[1], match[2]]),
+  );
+  assert.deepEqual(icons, { PVE: 'mode-peace.svg', PVP: 'server-pvp-art.png', ANY: 'mode-shrug.svg' });
+  for (const file of Object.values(icons)) {
+    assert.ok(existsSync(iconPath(file)), `missing artwork ${file}`);
+  }
+  // The form, the overview and the admin panel all read this one table.
+  assert.match(appSource, /const serverModeChoices = serverModes\.map\(\(mode\) => \(\{ \.\.\.mode, icon: serverModeIcons\[mode\.name\] \}\)\);/);
+  assert.match(appSource, /icon\.src = iconUrl\(serverModeIcons\[value\]\);/);
+  // The replaced AI motifs must not be referenced anywhere anymore.
+  assert.ok(!/server-pve-art\.png|server-any-art\.png/.test(appSource), 'a removed icon file is still referenced');
+});
+
+test('the imported emoji assets stay local, script-free and self-contained', () => {
+  for (const file of ['mode-peace.svg', 'mode-shrug.svg']) {
+    const svg = readFileSync(iconPath(file), 'utf8');
+    assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"/, file);
+    assert.ok(!/<script/i.test(svg), `${file} contains a script`);
+    assert.ok(!/onload=/i.test(svg), `${file} contains an inline handler`);
+    // Only the SVG namespace may appear as an absolute reference.
+    const refs = [...svg.matchAll(/https?:\/\/[^"'\s>]+/g)].map((match) => match[0]);
+    assert.deepEqual([...new Set(refs)], ['http://www.w3.org/2000/svg'], file);
+  }
+});
 
 test('the statistic only offers the play modes the project actually stores', () => {
   assert.deepEqual(serverModes.map((mode) => mode.name), ['PVE', 'PVP', 'ANY']);

@@ -246,9 +246,10 @@ test('the statistic never publishes more than counts and shares', () => {
 test('the registration form previews the same role the roster would show', () => {
   // The live preview must not contradict the derivation, e.g. for a class without a spec.
   assert.match(appSource, /const derivedRole = \(\) => raidRole\(\{ class_name: choice\("class"\), spec: choice\("spec"\) \}\);/);
-  // The field only appears once a spec is picked, so no role is announced for a bare class.
-  assert.match(appSource, /const chosenSpec = choice\("spec"\);\n  const panel = \$\("#role-result"\);\n  panel\.hidden = !chosenSpec;\n  if \(!chosenSpec\) return;/);
-  assert.match(appSource, /const role = derivedRole\(\);\n  const display = \$\("#derived-role"\);/);
+  // The field appears as soon as the role is certain: with a spec, or with a class whose specs all
+  // cover one role. An ambiguous class stays hidden until its spec is picked.
+  assert.match(appSource, /const panel = \$\("#role-result"\);\n  if \(!chosenSpec && !uniqueClassRole\(className\)\) \{\n    panel\.hidden = true;\n    return;\n  \}\n  panel\.hidden = false;/);
+  assert.match(appSource, /import \{\n  raidRole, raidRoleOrder, raidRoleClass, raidClassSpecs, classNames, serverModes,\n  serverModeLabel, modePreferenceStats, uniqueClassRole,\n\} from "\.\/raid-roles\.js";/);
   // It starts hidden in the markup as well, so nothing flashes before the first update.
   const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
   assert.match(html, /<div id="role-result" class="role-result" aria-live="polite" hidden>/);

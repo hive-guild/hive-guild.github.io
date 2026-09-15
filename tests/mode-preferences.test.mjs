@@ -138,6 +138,19 @@ test('overview and admin panel render the statistic through one shared function 
   assert.ok(!/zusätzliche Tage oder längere Zeitfenster/.test(appSource), 'removed alternative summary still rendered');
 });
 
+test('the availability cards carry only their labels, slots and shares', () => {
+  // Labels the operator asked for, on both the overview and the admin panel.
+  const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
+  assert.equal([...html.matchAll(/section-index">PERFECT MATCH</g)].length, 2);
+  assert.ok(!/GEMEINSAME VERFÜGBARKEIT/.test(html), 'old availability label still present');
+  // The extra summary lines below the slots are gone.
+  assert.ok(!/gemeinsam maximal/.test(appSource), 'removed availability summary still rendered');
+  assert.match(appSource, /\/\/ The slots above already carry the day and the time window; no extra summary line\.\n    target\.append\(slots\);/);
+  // The alternative card keeps its own label and no long summary either.
+  assert.equal([...html.matchAll(/section-index">GUTE OPTIONEN</g)].length, 2);
+  assert.ok(!/zusätzliche Tage oder längere Zeitfenster/.test(appSource), 'removed alternative summary still rendered');
+});
+
 test('the public statistic describes the unfiltered roster and says so', () => {
   assert.match(appSource, /The statistic describes the complete roster, independently of role and class filters/);
   assert.match(appSource, /never the current role\/class filter/);

@@ -92,6 +92,12 @@ test('overview and admin panel render the statistic through one shared function 
   assert.match(appSource, /renderModePreferences\(\$\("#public-mode-stats"\), publicEntries\)/);
   // Both surfaces read the same calculation from the shared module.
   assert.equal([...appSource.matchAll(/modePreferenceStats\(/g)].length, 1);
+  // Every mode row carries the same artwork the registration form uses.
+  assert.match(appSource, /chartRow\(serverModeLabel\(row\.mode\), row\.count, row\.share, serverModeIcons\[row\.mode\]\)/);
+  assert.equal([...appSource.matchAll(/row\.count, row\.share, serverModeIcons\[row\.mode\]/g)].length, 1);
+  // No extra explanation lines below the bars; the card head names the scope instead.
+  assert.ok(!/mode-total/.test(appSource), 'stale caption element still rendered');
+  assert.ok(!/ergeben die Anteile zusammen/.test(appSource), 'removed share explanation still rendered');
 });
 
 test('the public statistic describes the unfiltered roster and says so', () => {

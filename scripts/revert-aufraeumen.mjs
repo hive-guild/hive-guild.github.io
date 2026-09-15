@@ -25,6 +25,11 @@ const RESTORE_DELETED = ['dist/assets/icons/server-pvp-art.png'];
 
 const git = (...args) => execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 
+// This script ships inside the commit it undoes, so restoring that commit would delete the script
+// halfway through. Keep its source in memory and write it back before finishing.
+const SELF = fileURLToPath(import.meta.url);
+const selfSource = readFileSync(SELF);
+
 let tagCommit;
 try {
   tagCommit = git('rev-list', '-n', '1', TAG);
@@ -56,6 +61,11 @@ try {
 } catch {
   console.log(`  note      tag ${TAG} is gone already`);
 }
+
+// Put this script back, then rebuild: the versioned release folders are not part of the commit, so
+// the pages need a fresh build for the restored sources.
+writeFileSync(SELF, selfSource);
+console.log('  kept      scripts/revert-aufraeumen.mjs');
 
 const png = new URL('../dist/assets/icons/server-pvp-art.png', import.meta.url);
 if (existsSync(png)) {

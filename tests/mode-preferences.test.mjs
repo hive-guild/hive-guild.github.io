@@ -116,12 +116,14 @@ test('every icon the role map names is actually shipped', () => {
   }
 });
 
-test('Skyborne falls back to the credited placeholder while no portrait is picked', () => {
-  assert.ok(existsSync(iconPath('elf-ear.svg')), 'the credited placeholder is missing');
-  assert.match(appSource, /\{ name: "Skyborne", icon: "elf-ear" \}/);
+test('Skyborne ships its own portrait and no placeholder artwork', () => {
+  assert.ok(existsSync(iconPath('race-skyborne.png')), 'race-skyborne.png is missing');
+  assert.match(appSource, /\{ name: "Skyborne", icon: "race-skyborne\.png" \}/);
+  assert.ok(!/elf-ear/.test(appSource), 'app.js still points at the retired placeholder');
+  assert.ok(!existsSync(iconPath('elf-ear.svg')), 'the retired placeholder is still shipped');
   const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
-  assert.match(html, /Skyborne-Platzhalter: <a href="https:\/\/game-icons\.net\/1x1\/delapouite\/elf-ear\.html"/);
-  assert.match(html, /CC BY 3\.0/);
+  assert.ok(!/Elf ear|elf-ear\.html/.test(html), 'the footer still credits the removed placeholder');
+  assert.match(html, /Skyborne: offizielles Forever-Charakterbild/);
 });
 
 test('the race portraits keep their pre-session tile treatment', () => {

@@ -29,7 +29,7 @@ create table if not exists public.registrations (
   race text not null check (char_length(race) between 1 and 80),
   class_name text not null check (char_length(class_name) between 1 and 80),
   spec text not null check (char_length(spec) between 1 and 80),
-  role text not null check (role in ('Tank', 'Healer', 'Damage', 'Flexible')),
+  role text not null check (role in ('Tank', 'Healer', 'Melee DPS', 'Ranged DPS', 'Flexible')),
   days text[] not null check (cardinality(days) between 1 and 7),
   max_raid_days integer not null check (max_raid_days between 1 and 4),
   earliest_start text not null check (earliest_start in ('18:30', '19:00', '19:30', '20:00')),
@@ -93,28 +93,33 @@ create trigger hive_registrations_updated_at
   before update on public.registrations
   for each row execute function public.hive_set_updated_at();
 
+-- Mirrors dist/raid-roles.js. A picked spec wins; without a spec a class whose specs all cover the
+-- same role is still unambiguous (Mage/Warlock -> Ranged DPS, Rogue -> Melee DPS); everything else
+-- stays Flexible. There is deliberately no manual role stored in this project, so the stored value
+-- is always replaceable by the derived one.
 create or replace function public.hive_role_for_spec(p_class text, p_spec text)
 returns text language sql immutable set search_path = '' as $$
   select case
-    when p_class in ('Warrior','Hunter','Rogue','Druid','Shaman','Mage','Warlock','Priest','Paladin','Not sure yet')
-      and p_spec = 'Not sure yet' then 'Flexible'
+    when p_class = 'Warrior' and p_spec in ('Arms','Fury') then 'Melee DPS'
     when p_class = 'Warrior' and p_spec = 'Protection' then 'Tank'
+    when p_class = 'Hunter' and p_spec in ('Beast Mastery','Marksmanship') then 'Ranged DPS'
+    when p_class = 'Hunter' and p_spec = 'Survival' then 'Melee DPS'
+    when p_class = 'Rogue' then 'Melee DPS'
+    when p_class = 'Druid' and p_spec = 'Balance' then 'Ranged DPS'
     when p_class = 'Druid' and p_spec = 'Feral (Bear)' then 'Tank'
-    when p_class = 'Paladin' and p_spec = 'Protection' then 'Tank'
+    when p_class = 'Druid' and p_spec = 'Feral (Cat)' then 'Melee DPS'
     when p_class = 'Druid' and p_spec = 'Restoration' then 'Healer'
+    when p_class = 'Shaman' and p_spec = 'Elemental' then 'Ranged DPS'
+    when p_class = 'Shaman' and p_spec = 'Enhancement' then 'Melee DPS'
     when p_class = 'Shaman' and p_spec = 'Restoration' then 'Healer'
+    when p_class = 'Mage' then 'Ranged DPS'
+    when p_class = 'Warlock' then 'Ranged DPS'
     when p_class = 'Priest' and p_spec in ('Discipline','Holy') then 'Healer'
+    when p_class = 'Priest' and p_spec = 'Shadow' then 'Ranged DPS'
     when p_class = 'Paladin' and p_spec = 'Holy' then 'Healer'
-    when p_class = 'Warrior' and p_spec in ('Arms','Fury') then 'Damage'
-    when p_class = 'Hunter' and p_spec in ('Beast Mastery','Marksmanship','Survival') then 'Damage'
-    when p_class = 'Rogue' and p_spec in ('Assassination','Combat','Subtlety') then 'Damage'
-    when p_class = 'Druid' and p_spec in ('Balance','Feral (Cat)') then 'Damage'
-    when p_class = 'Shaman' and p_spec in ('Elemental','Enhancement') then 'Damage'
-    when p_class = 'Mage' and p_spec in ('Arcane','Fire','Frost') then 'Damage'
-    when p_class = 'Warlock' and p_spec in ('Affliction','Demonology','Destruction') then 'Damage'
-    when p_class = 'Priest' and p_spec = 'Shadow' then 'Damage'
-    when p_class = 'Paladin' and p_spec = 'Retribution' then 'Damage'
-    else null
+    when p_class = 'Paladin' and p_spec = 'Protection' then 'Tank'
+    when p_class = 'Paladin' and p_spec = 'Retribution' then 'Melee DPS'
+    else 'Flexible'
   end;
 $$;
 
@@ -356,8 +361,9 @@ as $$
     case r.role
       when 'Tank' then 1
       when 'Healer' then 2
-      when 'Damage' then 3
-      else 4
+      when 'Melee DPS' then 3
+      when 'Ranged DPS' then 4
+      else 5
     end,
     r.class_name, r.spec, r.name;
 $$;
@@ -491,7 +497,7 @@ returns table (name text, race text, class_name text, spec text, role text, serv
 language sql stable security definer set search_path = '' as $$
   select r.name, r.race, r.class_name, r.spec, r.role, r.server_mode
   from public.registrations r
-  order by case r.role when 'Tank' then 1 when 'Healer' then 2 when 'Damage' then 3 else 4 end,
+  order by case r.role when 'Tank' then 1 when 'Healer' then 2 when 'Melee DPS' then 3 when 'Ranged DPS' then 4 else 5 end,
     r.class_name, r.spec, r.name;
 $$;
 revoke all on function public.hive_public_roster() from public;
@@ -548,7 +554,7 @@ returns table (name text, race text, class_name text, spec text, role text, serv
 language sql stable security definer set search_path = '' as $$
   select r.name, r.race, r.class_name, r.spec, r.role, r.server_mode, r.raid_vision
   from public.registrations r
-  order by case r.role when 'Tank' then 1 when 'Healer' then 2 when 'Damage' then 3 else 4 end,
+  order by case r.role when 'Tank' then 1 when 'Healer' then 2 when 'Melee DPS' then 3 when 'Ranged DPS' then 4 else 5 end,
     r.class_name, r.spec, r.name;
 $$;
 revoke all on function public.hive_public_roster() from public;
@@ -564,7 +570,7 @@ returns table (name text, race text, class_name text, spec text, role text, serv
 language sql stable security definer set search_path = '' as $$
   select r.name, r.race, r.class_name, r.spec, r.role, r.server_mode, r.raid_vision, r.days, r.max_raid_days, r.earliest_start, r.latest_end
   from public.registrations r
-  order by case r.role when 'Tank' then 1 when 'Healer' then 2 when 'Damage' then 3 else 4 end,
+  order by case r.role when 'Tank' then 1 when 'Healer' then 2 when 'Melee DPS' then 3 when 'Ranged DPS' then 4 else 5 end,
     r.class_name, r.spec, r.name;
 $$;
 revoke all on function public.hive_public_roster() from public;

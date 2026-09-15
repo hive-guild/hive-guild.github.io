@@ -14,8 +14,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./releases/bfe351217c52bbf4/styles.css" />
-    <script type="module" src="./releases/bfe351217c52bbf4/app.js"></script>
+    <link rel="stylesheet" href="./releases/08f7e97f532297dd/styles.css" />
+    <script type="module" src="./releases/08f7e97f532297dd/app.js"></script>
   </head>
   <body>
     <div class="site-shell">
@@ -128,6 +128,10 @@
           <div class="public-panel">
             <div class="public-toolbar"><div><span class="section-index">AKTUELLER KADER</span><h2>ROSTER <span id="public-count"></span></h2></div><div class="filter-row"><label><span class="sr-only">Rolle filtern</span><select id="public-filter-role"><option value="">Alle Rollen</option><option>Tank</option><option>Healer</option><option>Melee DPS</option><option>Ranged DPS</option><option>Flexible</option></select></label><label><span class="sr-only">Klasse filtern</span><select id="public-filter-class"><option value="">Alle Klassen</option></select></label><label><span class="sr-only">Sortierung</span><select id="public-sort-by"><option value="role">Nach Rolle</option><option value="class">Nach Klasse</option><option value="spec">Nach Spec</option></select></label></div></div>
             <div id="public-stats" class="public-stats" aria-live="polite"></div>
+            <section class="insight-card mode-card" aria-labelledby="public-mode-heading">
+              <div class="mode-card-head"><div><span class="section-index">SPIELMODUS</span><h3 id="public-mode-heading">Bevorzugter Spielmodus</h3></div><span id="public-roster-scope" class="mode-scope"></span></div>
+              <div id="public-mode-stats" class="mode-stats" aria-live="polite"></div>
+            </section>
             <div class="availability-actions" role="group" aria-label="Gemeinsame Raidzeiten anzeigen">
               <button id="public-availability-all" class="availability-toggle" type="button" aria-expanded="false" aria-controls="public-availability-panel" data-availability="all" data-availability-scope="public" disabled>Wann haben bis jetzt alle Zeit?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
               <button id="public-availability-most" class="availability-toggle" type="button" aria-expanded="false" aria-controls="public-availability-panel" data-availability="most" data-availability-scope="public" disabled>Wann haben die meisten gemeinsam Zeit?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
@@ -150,6 +154,10 @@
           <div id="admin-panel" class="admin-panel" hidden>
             <div class="admin-toolbar"><div><span class="admin-live"><span class="signal-dot"></span> RAID-KADER</span><h2>RÜCKMELDUNGEN</h2></div><button id="logout-button" class="text-button" type="button">Abmelden ↗</button></div>
             <div id="stats-grid" class="stats-grid" aria-live="polite"></div>
+            <section class="insight-card mode-card" aria-labelledby="mode-heading">
+              <div class="mode-card-head"><div><span class="section-index">SPIELMODUS</span><h3 id="mode-heading">Bevorzugter Spielmodus</h3></div><span class="mode-scope">Alle Rückmeldungen · unabhängig von Rollen- und Klassenfiltern</span></div>
+              <div id="mode-stats" class="mode-stats" aria-live="polite"></div>
+            </section>
             <div class="availability-actions" role="group" aria-label="Gemeinsame Raidzeiten anzeigen">
               <button id="availability-all" class="availability-toggle" type="button" aria-expanded="true" aria-controls="availability-panel" data-availability="all" data-availability-scope="admin">Wann haben bis jetzt alle Zeit?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
               <button id="availability-most" class="availability-toggle" type="button" aria-expanded="false" aria-controls="availability-panel" data-availability="most" data-availability-scope="admin">Wann haben die meisten gemeinsam Zeit?<span class="availability-toggle-icon" aria-hidden="true"></span></button>

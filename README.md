@@ -15,7 +15,7 @@ Nur die Hauptseite https://hive-guild.github.io/ wird gepflegt. Das alte Reposit
 
 ## Einrichtung
 
-1. Für eine neue Datenbank `db/supabase.sql` ausführen. Für das laufende Projekt ausschließlich gezielte Migrationen unter `db/migrations` verwenden; zuletzt `2026-09-14-discord-tags.sql`.
+1. Für eine neue Datenbank `db/supabase.sql` ausführen. Für das laufende Projekt ausschließlich gezielte Migrationen unter `db/migrations` verwenden; zuletzt `2026-09-15-class-role-without-spec.sql`. Migrationen werden im Supabase-SQL-Editor ausgeführt und laufen dort in einer Transaktion; ein Push veröffentlicht nur die Webseite.
 2. In Supabase Authentication einen Admin mit E-Mail/Passwort anlegen und seine UUID in `public.hive_admins(user_id)` eintragen.
 3. `dist/config.js` enthält nur die öffentliche Supabase-URL und den Publishable Key.
 4. Discord-App **HIVE FOREVER**, Client-ID `1549126667295785110`: OAuth2-Redirect `https://amsmtoxjkitcwzumwyuz.supabase.co/auth/v1/callback`. Das Client-Secret direkt im Supabase-Discord-Anbieter speichern. [Konfiguration und Prüfungen](docs/discord-login.md).
@@ -27,11 +27,17 @@ Die statischen Dateien liegen in `dist/`. Lokal mit einem HTTP-Server aus diesem
 
 Die offizielle Supabase-Auth-Bibliothek ist lokal gebündelt und fest versioniert. Für Änderungen am Bundle: Abhängigkeiten mit pnpm installieren und `node scripts/build-auth.mjs` ausführen. `dist/vendor/` enthält das fertige Bundle samt Lizenz; Besucher brauchen kein externes JavaScript-CDN.
 
-Prüfungen: `node --check dist/app.js`, `node --check dist/config.js`, `node --test tests/*.test.mjs`. `tests/discord-accounts.sql` prüft Speichern, Aktualisieren, Löschen, Kontentrennung, RLS und Admin-Rechte in einer Transaktion, die alle Testdaten zurückrollt. Den tatsächlichen Discord-Rücksprung zusätzlich im Browser prüfen.
+Prüfungen: `node --check dist/app.js`, `node --check dist/config.js`, `node --test tests/*.test.mjs`. `tests/raid-roles.test.mjs` sichert die Rollenableitung ab, `tests/mode-preferences.test.mjs` die Spielmodus-Statistik. `tests/discord-accounts.sql` prüft Speichern, Aktualisieren, Löschen, Kontentrennung, RLS und Admin-Rechte in einer Transaktion, die alle Testdaten zurückrollt. Den tatsächlichen Discord-Rücksprung zusätzlich im Browser prüfen.
 
 ## Race, Class und Raidzeiten
 
 [Gültige Horde-Kombinationen und Quellen](docs/race-class-combinations.md). Unpassende Race-/Class-Kacheln bleiben sichtbar, sind ausgegraut und deaktiviert. „Auswahl zurücksetzen“ löscht nur Race, Class und Spec. Server und Formular verwenden dieselbe Matrix.
+
+## Rollen und Spielmodus-Statistik
+
+Klassen, Spezialisierungen und Rollen liegen zentral in `dist/raid-roles.js`; die SQL-Funktion `public.hive_role_for_spec` spiegelt dieselbe Zuordnung. Die Rolle wird bei jeder Anzeige neu aus Klasse und Spec abgeleitet, deshalb wirkt eine Verbesserung sofort für bereits gespeicherte Anmeldungen. Entscheidungsreihenfolge, Zuordnungstabelle und die Stellung manueller Rollen stehen in [docs/raid-roles.md](docs/raid-roles.md).
+
+Sowohl die öffentliche Raid-Übersicht als auch das Adminpanel zeigen eine Statistik zum bevorzugten Spielmodus: je Modus die Anzahl der Spieler und den prozentualen Anteil an allen Rückmeldungen, fehlende Angaben ausdrücklich als „Nicht angegeben". Beide Oberflächen nutzen dieselbe Berechnung aus `dist/raid-roles.js` und immer den vollständigen Kader, unabhängig von Rollen- und Klassenfiltern; die Karte benennt diesen Bezug. Ein Spieler hat genau einen bevorzugten Spielmodus, deshalb addieren sich die Anteile zu 100 %.
 
 Maximal vier Raidtage pro Woche, Startzeiten `18:30`, `19:00`, `19:30`, `20:00`, Endzeiten `22:00`, `22:30`, `23:00`. „Kennen wir uns?“ bleibt optional. Neue Werte mit `18:00` werden serverseitig abgewiesen.
 

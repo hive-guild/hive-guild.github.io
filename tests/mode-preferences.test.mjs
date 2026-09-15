@@ -113,6 +113,18 @@ test('Skyborne uses the official render, not the retired ear placeholder', () =>
   assert.match(html, /Skyborne: Ausschnitt aus einem offiziellen Forever-Render/);
 });
 
+test('every race portrait is presented the same way on both pages', () => {
+  const css = readFileSync(fileURLToPath(new URL('../dist/styles.css', import.meta.url)), 'utf8');
+  // One mask for the roster tile and the form tile, so a painted portrait and the cut-out render
+  // end with the same soft fade instead of a hard square against the surface behind them.
+  const mask = css.match(/\.public-race-icon,\.choice-icon\[src\*="race-"\]\{\n([^}]*)\}/);
+  assert.ok(mask, 'no shared race-portrait presentation rule');
+  assert.match(mask[1], /-webkit-mask-image:radial-gradient\(/);
+  assert.match(mask[1], /mask-image:radial-gradient\(/);
+  // The roster tile itself keeps its framed plate; the mask only softens the artwork's edge.
+  assert.match(css, /\.public-race-icon\{[^}]*background:#121720/);
+});
+
 test('the statistic only offers the play modes the project actually stores', () => {
   assert.deepEqual(serverModes.map((mode) => mode.name), ['PVE', 'PVP', 'ANY']);
   assert.equal(serverModeLabel('ANY'), 'Mir egal');

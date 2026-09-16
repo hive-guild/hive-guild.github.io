@@ -17,8 +17,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./releases/7bb3ded974d8d904/styles.css" />
-    <script type="module" src="./releases/7bb3ded974d8d904/app.js"></script>
+    <link rel="stylesheet" href="./releases/058a81752f9e9480/styles.css" />
+    <script type="module" src="./releases/058a81752f9e9480/app.js"></script>
   </head>
   <body>
     <!-- Keyboard users reach the content without tabbing through the whole navigation. -->
@@ -138,12 +138,10 @@
               <div id="public-mode-stats" class="mode-stats" aria-live="polite"></div>
             </section>
             <div class="availability-actions" role="group" aria-label="Gemeinsame Raidzeiten anzeigen">
-              <button id="public-availability-all" class="availability-toggle" type="button" aria-expanded="false" aria-controls="public-availability-panel" data-availability="all" data-availability-scope="public" disabled>Wann haben alle Zeit?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
               <button id="public-availability-most" class="availability-toggle" type="button" aria-expanded="false" aria-controls="public-availability-panel" data-availability="most" data-availability-scope="public" disabled>Wann haben die meisten Zeit? (mind. 3 Stunden Raidzeit)<span class="availability-toggle-icon" aria-hidden="true"></span></button>
   <button id="public-availability-days" class="availability-toggle" type="button" aria-expanded="false" aria-controls="public-availability-panel" data-availability="days" data-availability-scope="public" disabled>Wie viele Raidtage werden im Durchschnitt gewünscht?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
             </div>
             <div id="public-availability-panel" class="admin-insights public-availability-panel" role="region" aria-label="Gemeinsame Raidzeiten" hidden>
-              <section id="public-common-card" class="insight-card common-availability-card"><span class="section-index">PERFECT MATCH</span><h3>Wann haben alle Zeit?</h3><div id="public-common-availability" aria-live="polite"></div></section>
               <section id="public-most-card" class="insight-card common-availability-card" hidden><span class="section-index">BESTER KOMPROMISS</span><h3>Wann haben die meisten Zeit? (mind. 3 Stunden Raidzeit)</h3><div id="public-most-availability" aria-live="polite"></div></section>
   <section id="public-average-card" class="insight-card common-availability-card" hidden><span class="section-index">MAXIMALE RAIDTAGE IM SCHNITT</span><h3>Wie viele Raidtage sind maximal im Durchschnitt gewünscht?</h3><div id="public-average-days" aria-live="polite"></div></section>
             </div>
@@ -164,12 +162,10 @@
               <div id="mode-stats" class="mode-stats" aria-live="polite"></div>
             </section>
             <div class="availability-actions" role="group" aria-label="Gemeinsame Raidzeiten anzeigen">
-              <button id="availability-all" class="availability-toggle" type="button" aria-expanded="true" aria-controls="availability-panel" data-availability="all" data-availability-scope="admin">Wann haben alle Zeit?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
               <button id="availability-most" class="availability-toggle" type="button" aria-expanded="false" aria-controls="availability-panel" data-availability="most" data-availability-scope="admin">Wann haben die meisten Zeit? (mind. 3 Stunden Raidzeit)<span class="availability-toggle-icon" aria-hidden="true"></span></button>
   <button id="availability-days" class="availability-toggle" type="button" aria-expanded="false" aria-controls="availability-panel" data-availability="days" data-availability-scope="admin">Wie viele Raidtage werden im Durchschnitt gewünscht?<span class="availability-toggle-icon" aria-hidden="true"></span></button>
             </div>
-            <div id="availability-panel" class="admin-insights" role="region" aria-label="Gemeinsame Raidzeiten">
-              <section id="common-card" class="insight-card common-availability-card"><span class="section-index">PERFECT MATCH</span><h3>Wann haben alle Zeit?</h3><div id="common-availability" aria-live="polite"></div></section>
+            <div id="availability-panel" class="admin-insights" role="region" aria-label="Gemeinsame Raidzeiten" hidden>
               <section id="most-card" class="insight-card common-availability-card" hidden><span class="section-index">BESTER KOMPROMISS</span><h3>Wann haben die meisten Zeit? (mind. 3 Stunden Raidzeit)</h3><div id="most-availability" aria-live="polite"></div></section>
   <section id="average-card" class="insight-card common-availability-card" hidden><span class="section-index">MAXIMALE RAIDTAGE IM SCHNITT</span><h3>Wie viele Raidtage sind maximal im Durchschnitt gewünscht?</h3><div id="average-days" aria-live="polite"></div></section>
             </div>

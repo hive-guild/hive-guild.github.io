@@ -249,11 +249,12 @@ test('overview and admin panel render the statistic through one shared function 
 test('the availability cards carry only their labels, slots and shares', () => {
   // Labels the operator asked for, on both the overview and the admin panel.
   const html = readFileSync(fileURLToPath(new URL('../dist/index.html', import.meta.url)), 'utf8');
-  assert.equal([...html.matchAll(/section-index">PERFECT MATCH</g)].length, 2);
+  // The "perfect match" card is gone: with a three-hour minimum it never had a hit.
+  assert.ok(!/PERFECT MATCH/.test(html), 'the retired perfect-match card is still in the markup');
   assert.ok(!/GEMEINSAME VERFÜGBARKEIT/.test(html), 'old availability label still present');
   // The extra summary lines below the slots are gone.
   assert.ok(!/gemeinsam maximal/.test(appSource), 'removed availability summary still rendered');
-  assert.match(appSource, /\/\/ The slots above already carry the day and the time window; no extra summary line\.\n    target\.append\(slots\);/);
+  assert.ok(!/renderAvailabilityInsights/.test(appSource), 'the retired perfect-match renderer is still there');
   // The alternative card keeps its own label and no long summary either.
   assert.equal([...html.matchAll(/section-index">BESTER KOMPROMISS</g)].length, 2);
   assert.ok(!/GUTE OPTIONEN/.test(html), 'the retired GUTE OPTIONEN label is still present');

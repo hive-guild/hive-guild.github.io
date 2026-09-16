@@ -1,29 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { commonAvailability, mostAvailability } from '../dist/availability.js';
+import { mostAvailability } from '../dist/availability.js';
 const row = (days, start='19:00', end='23:00', max=2) => ({ days, earliest_start:start, latest_end:end, max_raid_days:max });
-test('intersection uses latest start, earliest end, common days and weekly cap', () => {
- const rows=[row(['Sun','Wed','Mon'],'19:00','23:00',3),row(['Fri','Wed','Sun'],'19:30','22:30',1)];
- assert.deepEqual(commonAvailability(rows),{status:'available',count:2,days:['Wed','Sun'],start:'19:30',end:'22:30',maxDays:1});
- assert.deepEqual(rows[0].days,['Sun','Wed','Mon']);
-});
-test('no common day, no positive time overlap and incomplete data never claim everyone is available', () => {
- assert.equal(commonAvailability([]).status,'empty');
- assert.equal(commonAvailability([row(['Mon']),row(['Tue'])]).status,'none');
- assert.equal(commonAvailability([row(['Mon'],'18:30','19:30'),row(['Mon'],'19:30')]).status,'none');
- assert.equal(commonAvailability([row(['Mon']),row(['Mon'],'bad')]).status,'incomplete');
- assert.equal(commonAvailability([row([])]).status,'incomplete');
-});
-test('one participant retains their valid days and time range', () => {
- assert.deepEqual(commonAvailability([row(['Wed','Sun'])]),{status:'available',count:1,days:['Wed','Sun'],start:'19:00',end:'23:00',maxDays:2});
-});
-
 // The compromise list ranks the windows that do not suit everybody, best first.
 const options = (result) => result.options.map((o) => `${o.day} ${o.start}-${o.end} (${o.count}/${result.count}, ${o.missing} fehlt)`);
 
 test('equally good days are both offered, best group first', () => {
   const rows=[row(['Mon','Wed'],'18:30','23:00'),row(['Mon','Wed'],'19:30','22:30'),row(['Tue'],'19:00','23:00')];
-  assert.equal(commonAvailability(rows).status,'none');
   const result=mostAvailability(rows);
   assert.equal(result.status,'available');
   assert.equal(result.count,3);
@@ -66,7 +49,6 @@ test('the next best group extends through the all-participant window', () => {
 
 test('six participants get wider five-person windows and an additional day', () => {
   const rows=[...Array.from({length:5},()=>row(['Mon','Wed'],'19:00','23:00')),row(['Wed'],'19:30','22:30')];
-  assert.deepEqual(commonAvailability(rows).days,['Wed']);
   const result=mostAvailability(rows);
   assert.equal(result.count,6);
   assert.equal(result.availableCount,6);

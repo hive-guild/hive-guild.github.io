@@ -754,7 +754,8 @@ function renderMostAvailability(entries, prefix = "") {
   target.append(slots);
   if (best.excludedCount) target.append(element("p", "common-caption",
     `${best.excludedCount} Rückmeldungen mit unvollständigen Zeitangaben sind noch nicht berücksichtigt.`));
-  target.append(element("p", "common-caption", "Mouseover für Details"));
+  target.append(element("p", "common-caption",
+    "Zeiger auf eine Kachel zeigt, wer in dem Fenster dabei ist und wer nicht."));
 }
 
 function detail(label, value, className = "roster-detail") {

@@ -1,7 +1,7 @@
 import { mostAvailability } from "./availability.js";
 import {
   raidRole, raidRoleOrder, raidRoleClass, raidClassSpecs, classNames, serverModes,
-  serverModeLabel, modePreferenceStats, uniqueClassRole, raidRoleLabel, OPEN_SPEC,
+  serverModeLabel, modePreferenceStats, uniqueClassRole, raidRoleLabel,
 } from "./raid-roles.js";
 import { AuthClient } from "./vendor/supabase-auth.js";
 import { SUPABASE_URL, SUPABASE_PUBLIC_KEY } from "./config.js";
@@ -539,14 +539,10 @@ function renderPublicRoster() {
       const heading = element("h3", "public-group");
       // Every kind of grouping names its heading with artwork: the role's own for the role sort, the class
       // crest for the class sort, and the spec's icon for the spec sort - the class is named beside it,
-      // since a spec name alone does not say which class it belongs to. "Not sure yet" has no artwork of
-      // its own, so that group falls back to the class crest or the question mark.
-      const offeneSpec = entry.class_name === OPEN_SPEC || group === OPEN_SPEC;
+      // since a spec name alone does not say which class it belongs to.
       const groupIcon = sortBy === "role" ? roleIcons[group]
         : sortBy === "class" ? classes.find((item) => item.name === group)?.icon
-        : specIcons[entry.class_name]?.[group] ||
-          (!offeneSpec && `spec-${iconSlug(entry.class_name)}-${iconSlug(group)}.jpg`) ||
-          classes.find((item) => item.name === entry.class_name)?.icon || "role-flexible.png";
+        : specIcons[entry.class_name]?.[group] || `spec-${iconSlug(entry.class_name)}-${iconSlug(group)}.jpg`;
       if (sortBy === "role") heading.classList.add(`role-${raidRoleClass(group)}`);
       if (groupIcon) {
         const headIcon = document.createElement("img");

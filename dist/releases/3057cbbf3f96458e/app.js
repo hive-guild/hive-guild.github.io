@@ -1,7 +1,7 @@
 import { mostAvailability } from "./availability.js";
 import {
   raidRole, raidRoleOrder, raidRoleClass, raidClassSpecs, classNames, serverModes,
-  serverModeLabel, modePreferenceStats, uniqueClassRole, raidRoleLabel, OPEN_SPEC,
+  serverModeLabel, modePreferenceStats, uniqueClassRole, raidRoleLabel,
 } from "./raid-roles.js";
 import { AuthClient } from "./vendor/supabase-auth.js";
 import { SUPABASE_URL, SUPABASE_PUBLIC_KEY } from "./config.js";

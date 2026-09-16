@@ -725,6 +725,8 @@ const byClassThenSpec = (leute) => [...leute].sort((a, b) =>
 // inside the window when it would run past an edge.
 function placeSlotDetails(slot, details) {
   details.style.position = "fixed";
+  details.style.visibility = "hidden";
+  details.style.opacity = "0";
   details.style.left = "0px";
   details.style.top = "0px";
   details.style.bottom = "auto";
@@ -737,6 +739,8 @@ function placeSlotDetails(slot, details) {
   const left = Math.min(Math.max(rand, kachel.left), Math.max(rand, innerWidth - box.width - rand));
   details.style.left = `${Math.round(left)}px`;
   details.style.top = `${Math.round(top)}px`;
+  details.style.visibility = "";
+  details.style.opacity = "";
 }
 
 function renderMostAvailability(entries, prefix = "") {
@@ -826,9 +830,6 @@ function renderMostAvailability(entries, prefix = "") {
     slot.setAttribute("aria-label", `${dayLabels[option.day]} ${option.start} bis ${option.end}, ${option.count} von ${best.count} dabei`);
     // Placed in the window rather than inside the card: inside it would either be clipped or cover the
     // cards of the next row, and it has to sit above the slot either way.
-    // The script only places the panel; whether it is shown is the card's :hover, which cannot flicker.
-    // Tracking enter and leave by hand does not work here: the card redraws its contents on hover, and
-    // the leave arrives right after the enter.
     const zeigen = () => placeSlotDetails(slot, details);
     slot.addEventListener("mouseenter", zeigen);
     slot.addEventListener("focusin", zeigen);

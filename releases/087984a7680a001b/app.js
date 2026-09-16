@@ -699,7 +699,7 @@ function renderPublicInsights(error = "") {
     return;
   }
   renderMostAvailability(state.publicEntries, "public-");
-  // The board is built when its toggle is opened, not on every page load: 154 cells nobody asked for.
+  renderWhoCanWhen(state.publicEntries, "public-");
 }
 
 function renderMostAvailability(entries, prefix = "") {
@@ -742,12 +742,7 @@ function renderWhoCanWhen(entries, prefix = "") {
     raidRoleOrder.indexOf(raidRole(a)) - raidRoleOrder.indexOf(raidRole(b)) ||
     a.class_name.localeCompare(b.class_name, "de") || a.name.localeCompare(b.name, "de"));
   const board = whoCanWhen(ordered, best.slots);
-  // Only the days with an offered window get a count; a dash for the rest, because "0" would read as
-  // "nobody can" when it only means "no evening is on offer there".
-  const windowDays = new Set(best.slots.map((slot) => slot.day));
-  const fitting = new Map(daysOrder.map((day) => [day, windowDays.has(day)
-    ? board.filter((row) => row.cells.some((cell) => cell.day === day && cell.fits)).length
-    : null]));
+  const fitting = new Map(daysOrder.map((day) => [day, board.filter((row) => row.cells.some((cell) => cell.day === day && cell.fits)).length]));
 
   const table = element("table", "who-table");
   const head = element("thead");
@@ -757,8 +752,7 @@ function renderWhoCanWhen(entries, prefix = "") {
     const th = element("th");
     th.scope = "col";
     th.append(element("span", "who-day", dayLabels[day]));
-    const count = fitting.get(day);
-    th.append(element("small", "who-day-count", count === null ? "–" : String(count)));
+    th.append(element("small", "who-day-count", String(fitting.get(day))));
     headRow.append(th);
   }
   head.append(headRow);
@@ -789,10 +783,7 @@ function renderWhoCanWhen(entries, prefix = "") {
     body.append(tr);
   }
   table.append(body);
-  // element() sets its third argument as text; the table has to go in as a child.
-  const scroll = element("div", "who-scroll");
-  scroll.append(table);
-  target.append(scroll);
+  target.append(element("div", "who-scroll", table));
 
   const offered = best.slots.map((slot) => `${dayLabels[slot.day]} ${slot.start}–${slot.end}`);
   target.append(element("p", "common-caption", offered.length
@@ -848,6 +839,7 @@ function renderDashboard() {
   renderStats();
   renderModePreferences($("#mode-stats"), state.entries);
   renderMostAvailability(state.entries);
+  renderWhoCanWhen(state.entries);
   renderAverageRaidDays(state.entries);
   const roleFilter = $("#filter-role").value;
   const classFilter = $("#filter-class");

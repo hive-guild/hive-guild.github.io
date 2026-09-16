@@ -699,7 +699,7 @@ function renderPublicInsights(error = "") {
     return;
   }
   renderMostAvailability(state.publicEntries, "public-");
-  // The board is built when its toggle is opened, not on every page load: 154 cells nobody asked for.
+  renderWhoCanWhen(state.publicEntries, "public-");
 }
 
 function renderMostAvailability(entries, prefix = "") {
@@ -848,6 +848,7 @@ function renderDashboard() {
   renderStats();
   renderModePreferences($("#mode-stats"), state.entries);
   renderMostAvailability(state.entries);
+  renderWhoCanWhen(state.entries);
   renderAverageRaidDays(state.entries);
   const roleFilter = $("#filter-role").value;
   const classFilter = $("#filter-class");

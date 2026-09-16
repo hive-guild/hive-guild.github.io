@@ -5,38 +5,6 @@
 .skip-link{position:absolute;left:12px;top:-100px;z-index:100;padding:12px 18px;background:#1c222d;border:1px solid #5fc2a4;color:#fff;font-weight:700;font-size:14px;text-decoration:none}
 .skip-link:focus,.skip-link:focus-visible{top:12px;outline:3px solid #8bd9bd;outline-offset:2px}
 main:focus{outline:none}
-/* Who can when: one row per person, one column per day. A marked day is a bar; a day that also
-   covers the offered window is filled with the role's own colour. */
-.who-scroll{overflow-x:auto;margin:2px 0 14px}
-.who-table{border-collapse:collapse;width:100%;min-width:520px}
-.who-table th,.who-table td{padding:0;text-align:center}
-.who-table thead th{padding:0 6px 8px;vertical-align:bottom;border-bottom:1px solid var(--line-soft)}
-.who-table thead .who-name-head{text-align:left;font:700 11px/1 var(--font-body);letter-spacing:.12em;
-  text-transform:uppercase;color:var(--muted-2);padding-left:2px}
-.who-day{display:block;font:800 15px/1.1 var(--font-display);letter-spacing:.04em;color:var(--text)}
-.who-day-count{display:block;font-weight:700;font-size:11px;color:var(--muted-2)}
-.who-table tbody tr{border-bottom:1px solid rgba(255,255,255,.05)}
-.who-table tbody tr:last-child{border-bottom:0}
-.who-name{text-align:left;white-space:nowrap;font-weight:600;font-size:13px;color:var(--text);
-  padding:5px 14px 5px 2px;display:flex;align-items:center;gap:8px}
-.who-role-icon{width:20px;height:20px;object-fit:cover;flex:none}
-.who-cell{padding:5px 4px}
-.who-mark{display:inline-block;width:74%;max-width:46px;height:9px;border-radius:2px;
-  background:rgba(255,255,255,.07)}
-.who-mark:not([title]),.who-mark[title=""]{background:rgba(255,255,255,.05)}
-.who-mark[title]{background:rgba(255,255,255,.16)}
-.who-mark.who-fits{background:var(--who-accent,var(--text))}
-.who-mark.role-tank.who-fits{--who-accent:#aaa2ff}
-.who-mark.role-healer.who-fits{--who-accent:#8bd9bd}
-.who-mark.role-melee-dps.who-fits{--who-accent:#ff9c9f}
-.who-mark.role-ranged-dps.who-fits{--who-accent:#c8adff}
-.who-mark.role-flexible.who-fits{--who-accent:#e3c284}
-@media(max-width:760px){
-  .who-table{min-width:430px}
-  .who-name{font-size:12px;padding-right:8px}
-  .who-mark{height:8px}
-  .who-day{font-size:13px}
-}
 /* The side frame runs down the edge of the content, not the window: the page tone is the same
    on both sides, so the border is what marks where the page begins. */
 .page-frame{max-width:1680px;margin:auto;border-left:1px solid rgba(255,255,255,.30);border-right:1px solid rgba(255,255,255,.30);box-shadow:0 18px 50px rgba(0,0,0,.32)}

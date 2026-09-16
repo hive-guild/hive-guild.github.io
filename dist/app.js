@@ -1,4 +1,4 @@
-import { mostAvailability, whoCanWhen } from "./availability.js";
+import { mostAvailability } from "./availability.js";
 import {
   raidRole, raidRoleOrder, raidRoleClass, raidClassSpecs, classNames, serverModes,
   serverModeLabel, modePreferenceStats, uniqueClassRole, raidRoleLabel,
@@ -446,7 +446,7 @@ function element(tag, className = "", content = "") {
 async function loadPublicEntries() {
   showError($("#public-error"), "");
   for (const button of $$('[data-availability-scope="public"]')) button.disabled = true;
-  for (const selector of ["#public-who-can", "#public-most-availability"]) $(selector).replaceChildren(element("p", "common-caption", "Rückmeldungen werden geladen …"));
+  $("#public-most-availability").replaceChildren(element("p", "common-caption", "Rückmeldungen werden geladen …"));
   renderModePreferences($("#public-mode-stats"), []);
   $("#public-roster-scope").textContent = "";
   try {
@@ -695,11 +695,10 @@ function renderPublicInsights(error = "") {
   // Always use the complete public roster, independently of the role/class filters.
   renderAverageRaidDays(state.publicEntries, "public-");
   if (error) {
-    for (const selector of ["#public-who-can", "#public-most-availability"]) $(selector).replaceChildren(element("p", "common-caption", error));
+    $("#public-most-availability").replaceChildren(element("p", "common-caption", error));
     return;
   }
   renderMostAvailability(state.publicEntries, "public-");
-  // The board is built when its toggle is opened, not on every page load: 154 cells nobody asked for.
 }
 
 function renderMostAvailability(entries, prefix = "") {
@@ -723,81 +722,6 @@ function renderMostAvailability(entries, prefix = "") {
     slots.append(slot);
   }
   target.append(slots);
-  if (best.excludedCount) target.append(element("p", "common-caption",
-    `${best.excludedCount} Rückmeldungen mit unvollständigen Zeitangaben sind noch nicht berücksichtigt.`));
-}
-
-// Who is there when: a row per person, a column per day. A marked day is a bar; a day that also
-// covers the window the compromise list offers for it is filled with the role's own colour, so the
-// board shows at a glance whether the people you need are there on the evening you are planning.
-function renderWhoCanWhen(entries, prefix = "") {
-  const target = $(`#${prefix}who-can`);
-  target.replaceChildren();
-  if (!entries.length) {
-    target.append(element("p", "common-caption", "Noch keine Rückmeldungen vorhanden."));
-    return;
-  }
-  const best = mostAvailability(entries);
-  const ordered = [...entries].sort((a, b) =>
-    raidRoleOrder.indexOf(raidRole(a)) - raidRoleOrder.indexOf(raidRole(b)) ||
-    a.class_name.localeCompare(b.class_name, "de") || a.name.localeCompare(b.name, "de"));
-  const board = whoCanWhen(ordered, best.slots);
-  // Only the days with an offered window get a count; a dash for the rest, because "0" would read as
-  // "nobody can" when it only means "no evening is on offer there".
-  const windowDays = new Set(best.slots.map((slot) => slot.day));
-  const fitting = new Map(daysOrder.map((day) => [day, windowDays.has(day)
-    ? board.filter((row) => row.cells.some((cell) => cell.day === day && cell.fits)).length
-    : null]));
-
-  const table = element("table", "who-table");
-  const head = element("thead");
-  const headRow = element("tr");
-  headRow.append(element("th", "who-name-head", "Wer"));
-  for (const day of daysOrder) {
-    const th = element("th");
-    th.scope = "col";
-    th.append(element("span", "who-day", dayLabels[day]));
-    const count = fitting.get(day);
-    th.append(element("small", "who-day-count", count === null ? "–" : String(count)));
-    headRow.append(th);
-  }
-  head.append(headRow);
-  table.append(head);
-
-  const body = element("tbody");
-  for (const row of board) {
-    const tr = element("tr");
-    const name = element("th", "who-name");
-    name.scope = "row";
-    const icon = element("img", "who-role-icon");
-    icon.src = iconUrl(roleIcons[row.role] || "role-flexible.png");
-    icon.alt = "";
-    icon.width = 20;
-    icon.height = 20;
-    name.append(icon, element("span", "", displayChoice(row.name)));
-    tr.append(name);
-    for (const cell of row.cells) {
-      const td = element("td", "who-cell");
-      const mark = element("span", `who-mark${cell.marked ? ` role-${raidRoleClass(row.role)}` : ""}${cell.fits ? " who-fits" : ""}`);
-      mark.title = !cell.marked ? `${row.name} kann ${dayLabels[cell.day]} nicht`
-        : cell.fits ? `${row.name} passt ${dayLabels[cell.day]} ins Zeitfenster`
-        : `${row.name} kann ${dayLabels[cell.day]}, aber die Zeiten passen nicht ins Fenster`;
-      mark.setAttribute("aria-label", mark.title);
-      td.append(mark);
-      tr.append(td);
-    }
-    body.append(tr);
-  }
-  table.append(body);
-  // element() sets its third argument as text; the table has to go in as a child.
-  const scroll = element("div", "who-scroll");
-  scroll.append(table);
-  target.append(scroll);
-
-  const offered = best.slots.map((slot) => `${dayLabels[slot.day]} ${slot.start}–${slot.end}`);
-  target.append(element("p", "common-caption", offered.length
-    ? `Kräftig gefüllt heißt: kann an dem Tag und die eigenen Zeiten decken das Angebot ab. Angebotene Fenster: ${offered.join(", ")}.`
-    : "Kräftig gefüllt heißt: kann an dem Tag und die eigenen Zeiten würden ein drei Stunden langes Fenster tragen. Für welchen Tag das gilt, steht unter „Wann haben die meisten Zeit?“."));
   if (best.excludedCount) target.append(element("p", "common-caption",
     `${best.excludedCount} Rückmeldungen mit unvollständigen Zeitangaben sind noch nicht berücksichtigt.`));
 }
@@ -998,12 +922,11 @@ for (const button of $$("[data-availability]")) button.addEventListener("click",
   const prefix = scope === "public" ? "public-" : "";
   for (const option of $$(`[data-availability-scope="${scope}"]`)) option.setAttribute("aria-expanded", String(expanded && option === button));
   $(`#${prefix}availability-panel`).hidden = !expanded;
-  $(`#${prefix}who-card`).hidden = button.dataset.availability !== "who";
   $(`#${prefix}most-card`).hidden = button.dataset.availability !== "most";
   $(`#${prefix}average-card`).hidden = button.dataset.availability !== "days";
-  const currentEntries = scope === "public" ? state.publicEntries : state.entries;
-  if (expanded && button.dataset.availability === "days") renderAverageRaidDays(currentEntries, prefix);
-  if (expanded && button.dataset.availability === "who") renderWhoCanWhen(currentEntries, prefix);
+  if (expanded && button.dataset.availability === "days") {
+    renderAverageRaidDays(scope === "public" ? state.publicEntries : state.entries, prefix);
+  }
 });
 $(".menu-toggle").addEventListener("click", () => {
   const open = $(".main-nav").classList.toggle("open");

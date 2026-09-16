@@ -5,35 +5,18 @@ function minutes(value) {
   return hour * 60 + minute;
 }
 const clock = (value) => `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(value % 60).padStart(2, "0")}`;
-const days = [...dayOrder];
-// Who is there when. For every entry and every day it says whether the person marked that day and
-// whether their own time window still covers the raid window offered for that day. The second is what
-// makes the board worth reading: a marked day is only usable when the times meet.
-export function whoCanWhen(entries, slots = []) {
-  const offered = new Map();
-  for (const slot of Array.isArray(slots) ? slots : []) {
-    const start = minutes(slot?.start);
-    const end = minutes(slot?.end);
-    if (start === null || end === null || start >= end) continue;
-    if (!offered.has(slot.day)) offered.set(slot.day, { start, end });
+// Every group of the requested size, used to rank the compromise windows.
+function* combinations(items, size) {
+  if (size > items.length) return;
+  const indices = Array.from({ length: size }, (_, position) => position);
+  while (true) {
+    yield indices.map((position) => items[position]);
+    let position = size - 1;
+    while (position >= 0 && indices[position] === items.length - size + position) position--;
+    if (position < 0) return;
+    indices[position]++;
+    for (let next = position + 1; next < size; next++) indices[next] = indices[next - 1] + 1;
   }
-  return entries.map((entry, index) => {
-    const start = minutes(entry.earliest_start);
-    const end = minutes(entry.latest_end);
-    const own = start !== null && end !== null && start < end ? { start, end } : null;
-    return {
-      index,
-      name: entry.name,
-      role: entry.role,
-      cells: days.map((day) => {
-        const marked = Array.isArray(entry.days) && entry.days.includes(day);
-        const slot = offered.get(day);
-        // Fits means: there for the day, a usable window of their own, and it covers what is offered.
-        const fits = marked && Boolean(own) && Boolean(slot) && own.start <= slot.start && own.end >= slot.end;
-        return { day, marked, fits };
-      }),
-    };
-  });
 }
 
 // A raid evening is worth planning only when it lasts; a window shorter than this is no offer, however

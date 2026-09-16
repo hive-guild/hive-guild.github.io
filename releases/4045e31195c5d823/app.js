@@ -714,28 +714,6 @@ const byClassThenSpec = (leute) => [...leute].sort((a, b) =>
   String(a.className ?? "").localeCompare(String(b.className ?? ""), "de") ||
   String(a.spec ?? "").localeCompare(String(b.spec ?? ""), "de") || byName(a, b));
 
-// Where the hover card goes: above the slot when there is room, below it otherwise, and nudged back
-// inside the window when it would run past an edge.
-function placeSlotDetails(slot, details) {
-  details.style.position = "fixed";
-  details.style.visibility = "hidden";
-  details.style.opacity = "0";
-  details.style.left = "0px";
-  details.style.top = "0px";
-  details.style.bottom = "auto";
-  const box = details.getBoundingClientRect();
-  const kachel = slot.getBoundingClientRect();
-  const rand = 12;
-  let top = kachel.top - box.height - 10;
-  if (top < rand) top = kachel.bottom + 10;
-  if (top + box.height > innerHeight - rand) top = Math.max(rand, innerHeight - box.height - rand);
-  const left = Math.min(Math.max(rand, kachel.left), Math.max(rand, innerWidth - box.width - rand));
-  details.style.left = `${Math.round(left)}px`;
-  details.style.top = `${Math.round(top)}px`;
-  details.style.visibility = "";
-  details.style.opacity = "";
-}
-
 function renderMostAvailability(entries, prefix = "") {
   const target = $(`#${prefix}most-availability`);
   target.replaceChildren();
@@ -799,11 +777,6 @@ function renderMostAvailability(entries, prefix = "") {
     slot.title = "";
     slot.tabIndex = 0;
     slot.setAttribute("aria-label", `${dayLabels[option.day]} ${option.start} bis ${option.end}, ${option.count} von ${best.count} dabei`);
-    // Placed in the window rather than inside the card: inside it would either be clipped or cover the
-    // cards of the next row, and it has to sit above the slot either way.
-    const zeigen = () => placeSlotDetails(slot, details);
-    slot.addEventListener("mouseenter", zeigen);
-    slot.addEventListener("focusin", zeigen);
     slots.append(slot);
   }
   target.append(slots);

@@ -705,18 +705,11 @@ function renderPublicInsights(error = "") {
   renderMostAvailability(state.publicEntries, "public-");
 }
 
-// The hover card lists the people who fit one heading per role, in the roster's own role order, and the
-// people who do not by class and spec. The name decides within a group, so equal entries keep their place.
+// The hover card lists two groups, each in the order that makes it readable: those who fit by role,
+// those who do not by class and spec. Both fall back to the name so equal entries keep a fixed order.
 const byName = (a, b) => String(a.name ?? "").localeCompare(String(b.name ?? ""), "de");
-const byRoleThenName = (leute) => {
-  const rest = [...new Set(leute.map((person) => person.role).filter((role) => !raidRoleOrder.includes(role)))].sort();
-  const gruppen = [];
-  for (const role of [...raidRoleOrder, ...rest]) {
-    const dieser = leute.filter((person) => person.role === role).sort(byName);
-    if (dieser.length) gruppen.push({ role, leute: dieser });
-  }
-  return gruppen;
-};
+const byRoleThenName = (leute) => [...leute].sort((a, b) =>
+  raidRoleOrder.indexOf(a.role) - raidRoleOrder.indexOf(b.role) || byName(a, b));
 const byClassThenSpec = (leute) => [...leute].sort((a, b) =>
   String(a.className ?? "").localeCompare(String(b.className ?? ""), "de") ||
   String(a.spec ?? "").localeCompare(String(b.spec ?? ""), "de") || byName(a, b));
@@ -725,6 +718,8 @@ const byClassThenSpec = (leute) => [...leute].sort((a, b) =>
 // inside the window when it would run past an edge.
 function placeSlotDetails(slot, details) {
   details.style.position = "fixed";
+  details.style.visibility = "hidden";
+  details.style.opacity = "0";
   details.style.left = "0px";
   details.style.top = "0px";
   details.style.bottom = "auto";
@@ -737,6 +732,8 @@ function placeSlotDetails(slot, details) {
   const left = Math.min(Math.max(rand, kachel.left), Math.max(rand, innerWidth - box.width - rand));
   details.style.left = `${Math.round(left)}px`;
   details.style.top = `${Math.round(top)}px`;
+  details.style.visibility = "";
+  details.style.opacity = "";
 }
 
 function renderMostAvailability(entries, prefix = "") {
@@ -781,42 +778,20 @@ function renderMostAvailability(entries, prefix = "") {
     details.setAttribute("role", "tooltip");
     details.append(element("p", "slot-details-head",
       `${dayLabels[option.day]} ${option.start}–${option.end} Uhr · ${option.count} von ${best.count}`));
-    // One line for a person, with their class and spec beside the name.
-    const personLine = (person) => {
-      const zeile = element("span", "slot-person");
-      zeile.append(element("b", "", displayChoice(person.name ?? "")));
-      if (person.className || person.spec) {
-        zeile.append(element("small", "", `${displayChoice(person.className)}${person.spec ? ` · ${displayChoice(person.spec)}` : ""}`));
-      }
-      return zeile;
-    };
     const gruppen = [
-      { titel: `Verfügbar (${option.canAttend.length})`, art: "can", bloecke: byRoleThenName(option.canAttend) },
-      // Keine Zeit has twenty classes, so it stays one list, ordered by class and spec.
-      { titel: `Keine Zeit (${option.cannotAttend.length})`, art: "cannot",
-        bloecke: [{ role: null, leute: byClassThenSpec(option.cannotAttend) }] },
+      { titel: `Verfügbar (${option.canAttend.length})`, art: "can", leute: byRoleThenName(option.canAttend) },
+      { titel: `Keine Zeit (${option.cannotAttend.length})`, art: "cannot", leute: byClassThenSpec(option.cannotAttend) },
     ];
     for (const gruppe of gruppen) {
       const block = element("div", `slot-details-group ${gruppe.art}`);
       block.append(element("span", "slot-details-label", gruppe.titel));
-      for (const teil of gruppe.bloecke) {
-        if (!teil.leute.length) continue;
-        // A role gets its own heading and a coloured edge, so the eye can stop at the role it needs.
-        const rolle = element("div", `slot-role-block${teil.role ? ` role-${raidRoleClass(teil.role)}` : ""}`);
-        if (teil.role) {
-          const kopf = element("span", "slot-role-head");
-          const symbol = element("img", "slot-role-icon");
-          symbol.src = iconUrl(roleIcons[teil.role] || "role-flexible.png");
-          symbol.alt = "";
-          symbol.width = 14;
-          symbol.height = 14;
-          kopf.append(symbol, element("span", "", `${raidRoleLabel(teil.role)} (${teil.leute.length})`));
-          rolle.append(kopf);
+      for (const person of gruppe.leute) {
+        const zeile = element("span", `slot-person role-${raidRoleClass(person.role)}`);
+        zeile.append(element("b", "", displayChoice(person.name ?? "")));
+        if (person.className || person.spec) {
+          zeile.append(element("small", "", `${displayChoice(person.className)}${person.spec ? ` · ${displayChoice(person.spec)}` : ""}`));
         }
-        const namen = element("div", "slot-role-names");
-        for (const person of teil.leute) namen.append(personLine(person));
-        rolle.append(namen);
-        block.append(rolle);
+        block.append(zeile);
       }
       details.append(block);
     }
@@ -826,9 +801,6 @@ function renderMostAvailability(entries, prefix = "") {
     slot.setAttribute("aria-label", `${dayLabels[option.day]} ${option.start} bis ${option.end}, ${option.count} von ${best.count} dabei`);
     // Placed in the window rather than inside the card: inside it would either be clipped or cover the
     // cards of the next row, and it has to sit above the slot either way.
-    // The script only places the panel; whether it is shown is the card's :hover, which cannot flicker.
-    // Tracking enter and leave by hand does not work here: the card redraws its contents on hover, and
-    // the leave arrives right after the enter.
     const zeigen = () => placeSlotDetails(slot, details);
     slot.addEventListener("mouseenter", zeigen);
     slot.addEventListener("focusin", zeigen);

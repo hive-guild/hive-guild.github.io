@@ -36,7 +36,7 @@ main:focus{outline:none}
 
 /* Let the painted landscape fade into the next section instead of ending at the ticker. */
 .welcome-view{position:relative;isolation:isolate;background:radial-gradient(ellipse 90% 30% at 65% 35%,rgba(51,81,87,.17),transparent 75%),#0d1219}
-.welcome-view::before{content:"";position:absolute;z-index:-1;top:0;left:0;right:0;height:1120px;pointer-events:none;background:url("assets/hive/brand/banner-raid-uebersicht.jpg") center top/cover no-repeat;opacity:.82;-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.7) 68%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.7) 68%,transparent 100%)}
+.welcome-view::before{content:"";position:absolute;z-index:-1;top:0;left:0;right:0;height:1120px;pointer-events:none;background:url("../../assets/hive/brand/banner-raid-uebersicht.jpg") center top/cover no-repeat;opacity:.82;-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.7) 68%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 48%,rgba(0,0,0,.7) 68%,transparent 100%)}
 .hero-grid{background:linear-gradient(90deg,rgba(8,13,19,.86),rgba(8,13,19,.69) 45%,rgba(8,13,19,.26)),linear-gradient(0deg,rgba(10,14,20,.52),transparent 42%)}
 .hero-grid::before{left:0;right:0;bottom:0;height:95px;background:linear-gradient(180deg,transparent,rgba(12,17,24,.64));pointer-events:none}
 .hero-art::before{background:radial-gradient(circle at 51% 41%,rgba(89,151,158,.21),transparent 58%),radial-gradient(circle at 60% 66%,rgba(238,57,75,.12),transparent 63%);filter:blur(25px)}
@@ -156,13 +156,13 @@ body::before{display:none}
 
 /* Keep the WoW Forever emblem in the supplied artwork unobstructed. */
 .welcome-view::before{display:none}
-.hero-grid{min-height:clamp(660px,50vw,840px);grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);background:linear-gradient(90deg,rgba(8,13,19,.94),rgba(8,13,19,.84) 31%,rgba(8,13,19,.44) 49%,rgba(8,13,19,.05) 66%),linear-gradient(0deg,rgba(10,14,20,.66),transparent 28%),url("assets/hive/brand/hintergrund-wow-forever-hd.jpg") center center/cover no-repeat}
+.hero-grid{min-height:clamp(660px,50vw,840px);grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);background:linear-gradient(90deg,rgba(8,13,19,.94),rgba(8,13,19,.84) 31%,rgba(8,13,19,.44) 49%,rgba(8,13,19,.05) 66%),linear-gradient(0deg,rgba(10,14,20,.66),transparent 28%),url("../../assets/hive/brand/hintergrund-wow-forever-hd.jpg") center center/cover no-repeat}
 .hero-copy{padding:72px 0 64px}
 .hero-copy h1{font-size:clamp(72px,7vw,116px)}
 .hero-copy .overline{margin-top:32px}
 .hero-lead{max-width:490px;font-size:17px;color:#e1e3e7}
 
-@media(max-width:1050px){.hero-grid{min-height:0;grid-template-columns:1fr;background:linear-gradient(0deg,#0d1219,transparent 22%) center top/100% 56.3vw no-repeat,url("assets/hive/brand/hintergrund-wow-forever-hd.jpg") center top/100% auto no-repeat,#0d1219}.hero-copy{padding:calc(56.3vw + 16px) 0 46px}.hero-copy h1{font-size:clamp(64px,12vw,94px)}.hero-copy .overline{margin-top:28px}.hero-lead{max-width:580px;font-size:16px}}
+@media(max-width:1050px){.hero-grid{min-height:0;grid-template-columns:1fr;background:linear-gradient(0deg,#0d1219,transparent 22%) center top/100% 56.3vw no-repeat,url("../../assets/hive/brand/hintergrund-wow-forever-hd.jpg") center top/100% auto no-repeat,#0d1219}.hero-copy{padding:calc(56.3vw + 16px) 0 46px}.hero-copy h1{font-size:clamp(64px,12vw,94px)}.hero-copy .overline{margin-top:28px}.hero-lead{max-width:580px;font-size:16px}}
 
 .character-choice-help{display:flex;align-items:center;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;margin-top:25px;color:#a6b0bd;font-size:12px;line-height:1.5}
 .character-choice-help p{margin:0;flex:1 1 280px}.character-choice-help .text-button{font-size:12px;white-space:nowrap;padding:5px 0}
@@ -174,7 +174,7 @@ body::before{display:none}
 @media(max-width:760px){.discord-account{padding:24px}.discord-account h2{font-size:25px}}
 
 /* Landscape banners for signup and the public roster. */
-.signup-view .page-intro,.public-view .page-intro{background:linear-gradient(90deg,rgba(9,17,24,.9),rgba(9,17,24,.72) 48%,rgba(9,17,24,.38)),url("assets/hive/brand/banner-raid-uebersicht.jpg") center 43%/cover no-repeat;border-bottom:0;text-shadow:0 2px 18px rgba(0,0,0,.45)}
+.signup-view .page-intro,.public-view .page-intro{background:linear-gradient(90deg,rgba(9,17,24,.9),rgba(9,17,24,.72) 48%,rgba(9,17,24,.38)),url("../../assets/hive/brand/banner-raid-uebersicht.jpg") center 43%/cover no-repeat;border-bottom:0;text-shadow:0 2px 18px rgba(0,0,0,.45)}
 .public-view .page-intro{background-position:center,center,center 59%}
 .signup-view .page-intro p,.public-view .page-intro p{color:#e0e4e8}
 @media(max-width:760px){.signup-view .page-intro,.public-view .page-intro{background-position:center,center,40% center}}
@@ -296,8 +296,8 @@ button.public-stat:disabled{cursor:default;opacity:.6}
 .role-chip.role-flexible{color:#e3c284;background:rgba(227,194,132,.10);border-color:rgba(227,194,132,.45)}
 .common-slot:focus-visible{outline:3px solid var(--text);outline-offset:2px}
 /* The hover card: laid out, not a title attribute, so the groups can be read. */
-.slot-details{position:fixed;left:0;top:0;z-index:60;width:min(560px,92vw);
-  max-height:none;overflow:visible;padding:13px 15px 14px;
+.slot-details{position:fixed;left:0;top:0;z-index:60;min-width:min(430px,88vw);
+  max-width:min(560px,92vw);max-height:60vh;overflow:auto;padding:13px 15px 14px;
   border:1px solid #4c5866;background:#151d26;box-shadow:0 18px 40px rgba(0,0,0,.55);
   opacity:0;visibility:hidden;transition:opacity .12s ease}
 .common-slot:hover .slot-details,.common-slot:focus-within .slot-details{opacity:1;visibility:visible}
@@ -309,11 +309,8 @@ button.public-stat:disabled{cursor:default;opacity:.6}
   margin-bottom:6px}
 .slot-details-group.can .slot-details-label{color:#8bd9bd}
 .slot-details-group.cannot .slot-details-label{color:#c9a0a4}
-.slot-details-group{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:1px 14px}
-.slot-details-group .slot-details-label{grid-column:1/-1}
-.slot-details-group .slot-person{display:flex;align-items:baseline;gap:6px;font-size:12px;line-height:1.5;
-  color:var(--text);min-width:0}
-.slot-details-group .slot-person b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.slot-details-group .slot-person{display:flex;align-items:baseline;gap:7px;font-size:12px;line-height:1.75;
+  color:var(--text)}
 .slot-details-group .slot-person b{font-weight:600}
 .slot-details-group .slot-person small{color:var(--muted-2);font-size:11px}
 .slot-details-group .slot-person[class*="role-"] b{color:var(--slot-accent,var(--text))}
@@ -323,8 +320,7 @@ button.public-stat:disabled{cursor:default;opacity:.6}
 .slot-person.role-ranged-dps{--slot-accent:#c8adff}
 .slot-person.role-flexible{--slot-accent:#e3c284}
 @media(max-width:760px){
-  .slot-details{width:min(92vw,420px)}
-  .slot-details-group{grid-template-columns:1fr 1fr}
+  .slot-details{min-width:0;width:max(260px,86vw);max-height:50vh}
 }
 
 .common-slot-head span{font-weight:600;font-size:16px;color:var(--text)}

@@ -42,10 +42,6 @@ const specIcons = {
   Rogue: { Combat: "spec-rogue-combat.jpg" },
   Druid: { "Feral (Bear)": "spec-druid-feral-bear.jpg", "Feral (Cat)": "spec-druid-feral-cat.jpg" },
 };
-// Short names for the role breakdown, where the artwork already says which role is meant and the row
-// would otherwise be too wide. The full wording stays in the tooltip.
-const roleChipLabels = { Tank: "Tank", Healer: "Heiler", "Melee DPS": "Melee", "Ranged DPS": "Ranged", Flexible: "tbd" };
-const roleChipLabel = (role) => roleChipLabels[role] ?? raidRoleLabel(role);
 // All Hive artwork lives in one package under assets/hive/<group>/. The name alone says which
 // group it belongs to, so the callers keep passing plain file names.
 const ART_GROUP = { class: "classes", spec: "specs", race: "races", role: "roles", mode: "modes" };
@@ -726,18 +722,11 @@ function renderMostAvailability(entries, prefix = "") {
     head.append(element("strong", "", dayLabels[option.day]), element("span", "", `${option.start}–${option.end} Uhr`),
       element("small", "availability-attendance", `${option.count} von ${best.count}`));
     slot.append(head);
-    // How many of each role fit this window, counted the way the roster counts roles. The role's own
-    // artwork carries the meaning, so the label is short.
+    // How many of each role fit this window, counted the way the roster counts roles.
     const roles = element("div", "common-slot-roles");
     for (const { role, count } of option.roles) {
       const badge = element("span", `role-chip role-${raidRoleClass(role)}`);
-      const icon = element("img", "role-chip-icon");
-      icon.src = iconUrl(roleIcons[role] || "role-flexible.png");
-      icon.alt = "";
-      icon.width = 18;
-      icon.height = 18;
-      badge.append(icon, element("b", "", String(count)), element("span", "", roleChipLabel(role)));
-      badge.title = `${raidRoleLabel(role)}: ${count}`;
+      badge.append(element("b", "", String(count)), element("span", "", raidRoleLabel(role)));
       roles.append(badge);
     }
     slot.append(roles);
@@ -754,7 +743,8 @@ function renderMostAvailability(entries, prefix = "") {
   target.append(slots);
   if (best.excludedCount) target.append(element("p", "common-caption",
     `${best.excludedCount} Rückmeldungen mit unvollständigen Zeitangaben sind noch nicht berücksichtigt.`));
-  target.append(element("p", "common-caption", "Mouseover für Details"));
+  target.append(element("p", "common-caption",
+    "Zeiger auf eine Kachel zeigt, wer in dem Fenster dabei ist und wer nicht."));
 }
 
 function detail(label, value, className = "roster-detail") {

@@ -712,14 +712,13 @@ function renderAverageRaidDays(entries, prefix = "") {
     kopf.append(element("span", "", tage === 1 ? "1 Tag" : `${tage} Tage`));
     block.append(kopf);
     const namen = element("div", "slot-role-names");
-    // Inside a day the roles decide, the same order the roster uses, and the name inside that. Each role
-    // appends a marker; the stylesheet hides every marker but the first, so a role is named once.
+    // Inside a day the roles decide, the same order the roster uses, and the name inside that.
     for (const teil of byRole(dieser, byName)) {
       const rolle = element("span", `slot-days-role role-${raidRoleClass(teil.role)}`);
       rolle.append(element("span", "", raidRoleLabel(teil.role)));
       namen.append(rolle);
       for (const entry of teil.leute) {
-        const zeile = element("span", `slot-person role-${raidRoleClass(teil.role)}`);
+        const zeile = element("span", "slot-person");
         zeile.append(element("b", "", displayChoice(entry.name ?? "")));
         if (entry.class_name || entry.spec) {
           zeile.append(element("small", "", `${displayChoice(entry.class_name)}${entry.spec ? ` · ${displayChoice(entry.spec)}` : ""}`));

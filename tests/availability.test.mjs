@@ -22,24 +22,32 @@ test('one participant retains their valid days and time range', () => {
 const options = (result) => result.options.map((o) => `${o.day} ${o.start}-${o.end} (${o.count}/${result.count}, ${o.missing} fehlt)`);
 
 test('equally good days are both offered, best group first', () => {
-  const rows=[row(['Mon','Wed'],'18:30','23:00'),row(['Mon','Wed'],'19:30','22:00'),row(['Tue'],'19:00','23:00')];
+  const rows=[row(['Mon','Wed'],'18:30','23:00'),row(['Mon','Wed'],'19:30','22:30'),row(['Tue'],'19:00','23:00')];
   assert.equal(commonAvailability(rows).status,'none');
   const result=mostAvailability(rows);
   assert.equal(result.status,'available');
   assert.equal(result.count,3);
   assert.equal(result.excludedCount,0);
   assert.equal(result.availableCount,2);
-  // The two flexible people cover 19:30-22:00 together, not the wider 18:30-23:00 of one of them.
-  assert.deepEqual(options(result),['Mon 19:30-22:00 (2/3, 1 fehlt)','Wed 19:30-22:00 (2/3, 1 fehlt)']);
-  assert.deepEqual(result.slots,[{day:'Mon',start:'19:30',end:'22:00'},{day:'Wed',start:'19:30',end:'22:00'}]);
+  // The two flexible people cover 19:30-22:30 together, not the wider 18:30-23:00 of one of them.
+  assert.deepEqual(options(result),['Mon 19:30-22:30 (2/3, 1 fehlt)','Wed 19:30-22:30 (2/3, 1 fehlt)']);
+  assert.deepEqual(result.slots,[{day:'Mon',start:'19:30',end:'22:30'},{day:'Wed',start:'19:30',end:'22:30'}]);
 });
 
 test('same-sized groups changing at a boundary remain separate time windows', () => {
-  const result=mostAvailability([row(['Mon'],'18:30','23:00'),row(['Mon'],'18:30','20:00'),row(['Mon'],'20:00','23:00')]);
+  const result=mostAvailability([row(['Mon'],'18:00','23:00'),row(['Mon'],'18:00','21:00'),row(['Mon'],'20:00','23:00')]);
   // Nobody can do the whole evening, so the two stretches count separately - each brings one person
-  // the other does not have.
+  // the other does not have, and both last the three hours a raid needs.
   assert.equal(result.availableCount,2);
-  assert.deepEqual(options(result),['Mon 18:30-20:00 (2/3, 1 fehlt)','Mon 20:00-23:00 (2/3, 1 fehlt)']);
+  assert.deepEqual(options(result),['Mon 18:00-21:00 (2/3, 1 fehlt)','Mon 20:00-23:00 (2/3, 1 fehlt)']);
+});
+
+test('a window shorter than the raid minimum is no offer', () => {
+  // Two people share Monday 19:30-22:00, which is two and a half hours.
+  const result=mostAvailability([row(['Mon'],'18:00','22:00'),row(['Mon'],'19:30','23:00')]);
+  assert.equal(result.status,'none');
+  assert.equal(result.availableCount,0);
+  assert.deepEqual(result.options,[]);
 });
 test('touching windows are not simultaneous and gaps are not bridged', () => {
   const result=mostAvailability([row(['Mon'],'18:30','19:00'),row(['Mon'],'19:00','20:00'),row(['Mon'],'21:00','23:00')]);
@@ -50,10 +58,10 @@ test('touching windows are not simultaneous and gaps are not bridged', () => {
 });
 
 test('the next best group extends through the all-participant window', () => {
-  const result=mostAvailability([row(['Mon','Sun'],'18:30','23:00'),row(['Sun'],'19:00','22:30'),row(['Sun'],'20:00','22:00')]);
+  const result=mostAvailability([row(['Mon','Sun'],'18:30','23:00'),row(['Sun'],'19:00','22:30'),row(['Sun'],'19:30','22:30')]);
   assert.equal(result.availableCount,3);
-  // The pair covers more of Sunday but adds nobody the full group does not already cover.
-  assert.deepEqual(options(result),['Sun 20:00-22:00 (3/3, 0 fehlt)']);
+  // All three share Sunday 19:30-22:30; the pair of the other two adds nobody new.
+  assert.deepEqual(options(result),['Sun 19:30-22:30 (3/3, 0 fehlt)']);
 });
 
 test('six participants get wider five-person windows and an additional day', () => {
@@ -92,9 +100,11 @@ test('three compromises are offered even when more than one person drops out', (
 });
 
 test('different groups cannot be merged across an everyone-available window', () => {
-  const result=mostAvailability([row(['Wed'],'18:30','23:00'),row(['Wed'],'18:30','22:00'),row(['Wed'],'20:00','23:00')]);
-  assert.equal(result.availableCount,3);
-  assert.deepEqual(options(result),['Wed 20:00-22:00 (3/3, 0 fehlt)']);
+  const result=mostAvailability([row(['Wed'],'19:00','23:00'),row(['Wed'],'19:00','22:00'),row(['Wed'],'19:30','23:00')]);
+  // All three overlap only 19:30-22:00, which is short of the raid minimum. What is left are the two
+  // pairs, each with its own evening - neither window is stitched together from both.
+  assert.equal(result.availableCount,2);
+  assert.deepEqual(options(result),['Wed 19:30-23:00 (2/3, 1 fehlt)','Wed 19:00-22:00 (2/3, 1 fehlt)']);
 });
 
 test('identical schedules and a single participant have no wider alternative', () => {

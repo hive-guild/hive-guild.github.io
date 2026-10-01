@@ -1,6 +1,10 @@
 # HIVE Forever
 
-Live: [hive-guild.github.io/anmeldung/](https://hive-guild.github.io/anmeldung/) · [GitHub](https://github.com/hive-guild/hive-guild.github.io) · [Admin-Login](https://hive-guild.github.io/#/admin)
+> **Stillgelegt am 01.10.2026.** Anmeldung und Übersicht laufen jetzt über den Final Signup unter https://signup.hive-guild.de. Unter https://hive-guild.github.io steht nur noch ein Hinweis, der nach fünf Sekunden dorthin weiterleitet (`/anmeldung/` und `#/anmeldung` auf `/anmeldung`, `#/admin` auf `/orga`, alles andere auf die Startseite).
+>
+> Der Hinweis liegt ausschließlich im Branch `gh-pages` (`index.html`, `404.html`, `anmeldung/index.html`), nicht in `dist/`. `scripts/publish-pages.py` deshalb nicht mehr ausführen: es würde die alte Anmeldung wieder veröffentlichen. Der Rest dieser Datei beschreibt den Stand vor der Stilllegung.
+
+Früher live: hive-guild.github.io/anmeldung/ · [GitHub](https://github.com/hive-guild/hive-guild.github.io) · Admin-Login unter `#/admin`
 
 Nur die Hauptseite https://hive-guild.github.io/ wird gepflegt. Das alte Repository und die zweite Webseite werden nicht mehr aktualisiert. Das lokale Repository bleibt die Quelle; ausschließlich Remote `hive-pages` veröffentlichen.
 
